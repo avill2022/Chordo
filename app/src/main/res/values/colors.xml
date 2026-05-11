@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+
+
+    <color name="secondaryHighlight">#B3B68F</color>
+    <color name="secondaryDark">#AFB8BC</color>
+    <color name="secondaryLight">#3A6C4E</color>
+    <color name="backgroundLight">#FFFFFF</color>
+
+    <color name="lightBlue">#59039BE5</color>
+
+    <color name="redLight">#ED1C24</color>
+    <color name="green">#0A9900</color>
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="gray">#808185</color>
+
+    <!-- Primary Colors -->
+    <color name="colorPrimary">#24643C</color>
+    <color name="primaryLight">#4CAF50</color> <!-- Light primary color for elements -->
+    <color name="primaryDark">#4CAF50</color>  <!-- Dark primary color for status bar -->
+
+    <!-- Background Colors -->
+    <color name="backgroundDark">#07530A</color> <!-- Dark background for the app -->
+
+    <!-- Text Colors -->
+    <color name="primaryText">#FFFFFF</color> <!-- Primary text color -->
+    <color name="secondaryText">#B0B0B0</color> <!-- Secondary text color -->
+    <color name="hintText">#8F8F8F</color> <!-- Hint text color -->
+
+    <!-- Accent Color -->
+    <color name="colorAccent">#03DAC6</color> <!-- Accent color for highlights -->
+    <color name="colorAccentDark">#067C71</color> <!-- Accent color for highlights -->
+    <color name="colorAccentLight">#69AEA7</color> <!-- Accent color for highlights -->
+
+    <!-- Button Colors -->
+    <color name="buttonBackground">#03DAC6</color> <!-- Background color for buttons -->
+    <color name="buttonText">#FFFFFF</color> <!-- Text color for buttons -->
+
+    <!-- EditText Colors -->
+    <color name="editTextText">#FFFFFF</color> <!-- Text color for EditText -->
+    <color name="editTextHint">#8F8F8F</color> <!-- Hint color for EditText -->
+
+    <!-- Spinner Colors -->
+    <color name="spinnerBackground">#121212</color> <!-- Background color for Spinner -->
+    <color name="spinnerPopupBackground">#FFFFFF</color> <!-- Popup background color for Spinner -->
+
+    <!-- Switch Colors -->
+    <color name="switchThumb">#03DAC6</color> <!-- Thumb color for Switch -->
+    <color name="switchTrack">#8F8F8F</color> <!-- Track color for Switch -->
+
+    <!-- Toolbar Colors -->
+    <color name="toolbarBackground">#009688</color> <!-- Background color for Toolbar -->
+    <color name="toolbarText">#FFFFFF</color> <!-- Text color for Toolbar -->
+</resources>

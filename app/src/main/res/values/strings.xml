@@ -1,0 +1,302 @@
+<resources>
+    <string name="app_name">Chordo</string>
+
+
+    <string-array name="planets_array">
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+    </string-array>
+
+
+
+    <plurals name="numberOfSongsAvailable1">
+        <!--
+        val array: Array<String> = resources.getStringArray(R.array.planets_array)
+             As a developer, you should always supply "one" and "other"
+             strings. Your translators will know which strings are actually
+             needed for their language. Always include %d in "one" because
+             translators will need to use %d for languages where "one"
+             doesn't mean 1 (as explained above).
+          -->
+        <item quantity="one">%d song found.</item>
+        <item quantity="other">%d songs found.</item>
+    </plurals>
+
+    <plurals name="numberOfSongsAvailable">
+        <item quantity="one">Znaleziono %d piosenkę.</item>
+        <item quantity="few">Znaleziono %d piosenki.</item>
+        <item quantity="other">Znaleziono %d piosenek.</item>
+    </plurals>
+
+    int count = getNumberOfSongsAvailable();
+    Resources res = getResources();
+    String songsFound = res.getQuantityString(R.plurals.numberOfSongsAvailable, count, count);
+
+    <string name="welcome_messages">Hello, %1$s! You have %2$d new messages.</string>
+    String text = getString(R.string.welcome_messages, username, mailCount);
+
+
+
+        <string name="welcome">Welcome to <b>Android</b>!</string>
+<!--
+    Negrita: <b>
+    Cursiva: <i>, <cite>, <dfn>, <em>
+    Texto 25% más grande: <big>
+    Texto 20% más pequeño: <small>
+    Configurar propiedades de la fuente: <font face=”font_family“ color=”hex_color”>. Algunas familias de fuentes posibles son monospace, serif y sans_serif.
+    Configurar una familia de fuentes monoespacio: <tt>
+    Tachado: <s>, <strike>, <del>
+    Subrayado: <u>
+    Superíndice: <sup>
+    Subíndice: <sub>
+    Viñetas: <ul>, <li>
+    Saltos de línea: <br>
+    División: <div>
+    Estilo CSS: <span style=”color|background_color|text-decoration”>
+-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string-array name="year_array">
+        <item>Año</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
+        <item>30</item>
+    </string-array>
+
+
+    <string-array name="month_array">
+        <item>Mes</item>
+        <item>01</item>
+        <item>02</item>
+        <item>03</item>
+        <item>04</item>
+        <item>05</item>
+        <item>06</item>
+        <item>07</item>
+        <item>08</item>
+        <item>09</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+    </string-array>
+
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+
+    <string name="close">Close</string>
+    <string name="open">Open</string>
+
+    <string name="ok">OK</string>
+
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+
+    <string name="help">Help</string>
+    <string name="register">Register</string>
+
+    <string name="error">Error</string>
+    <string name="confirm">Confirm</string>
+
+    <string name="width">Confirm</string>
+    <string name="height">Confirm</string>
+
+    <string name="connect">Confirm</string>
+    <string name="disconect">Confirm</string>
+
+    <string name="back">Back</string>
+
+    <string name="accept">Accept</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="login">Login</string>
+    <string name="sign_out">Sign out</string>
+
+    <string name="exit">Exit</string>
+
+    <string name="user">User</string>
+
+    <string name="log_in">Log in</string>
+    <string name="log_out">Log out</string>
+
+    <string name="close_session">Close session</string>
+
+    <string name="save">Save</string>
+    <string name="finish">Finish</string>
+
+
+
+    <string name="home">Home</string>
+    <string name="lastName">Last name</string>
+    <string name="curp">CURP</string>
+
+    <string name="name">Name</string>
+    <string name="last_name_s">Last name: %s</string>
+    <string name="email">Email</string>
+
+    <string name="password">Password</string>
+    <string name="profile_photo">Profile photo</string>
+    <string name="profile_user">Profile user</string>
+    <string name="profile_name">Profile name</string>
+    <string name="profile_last_name">Profile last name</string>
+    <string name="profile_middle_name">Middle name</string>
+    <string name="profile_phone">Profile phone</string>
+    <string name="profile_email">Profile email</string>
+
+    <string name="customer">Customer</string>
+    <string name="complete_the_files">Complete the fields</string>
+    <string name="alert">Alert</string>
+    <string name="menu_home">Home</string>
+    <string name="invalid_email">Invalid email</string>
+    <string name="month">Month</string>
+    <string name="year">Year</string>
+    <string name="info">Information</string>
+    <string name="button_save">Save</string>
+    <string name="contact">contact@suvabus.com</string>
+    <string name="date_example">Exp. 15 Dec. 24</string>
+    <string name="current_password">Current password</string>
+    <string name="new_password">New password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="show_password">Show passwords</string>
+    <string name="text_clave">CURP:</string>
+    <string name="text_name">Name:</string>
+    <string name="text_email">Email:</string>
+    <string name="text_folio">Folio:</string>
+    <string name="text_type_card">Card type</string>
+    <string name="search">Search</string>
+    <string name="send">Send</string>
+    <string name="no_card">Card number</string>
+
+
+    <string name="balance_checker">Check balance</string>
+    <string name="balance_recharger">Recharge card</string>
+    <string name="mother_last_name">Mother\'s last name</string>
+    <string name="restarting_services">Restarting services</string>
+    <string name="error_restarting_services">Error restarting services</string>
+    <string name="wait_a_moment_please">Please wait a moment</string>
+    <string name="impossible_to_start_the_device">Unable to start the device</string>
+    <string name="apply_recharges">Apply recharges</string>
+    <string name="present_card_again">Present the card again</string>
+    <string name="there_is_not_card">There is no card</string>
+    <string name="do_not_remove_the_card_from_the_reader">Do not remove the card from the reader</string>
+    <string name="pin_enter">Enter PIN</string>
+    <string name="fix_card">Fix card</string>
+    <string name="delete_card">Delete card</string>
+    <string name="invalid_balance">Invalid balance, please recharge the card</string>
+    <string name="damaged_card">DAMAGED CARD</string>
+    <string name="enter_with_card">Enter with card</string>
+    <string name="loading_moves">Loading movements</string>
+    <string name="id_client">Client ID</string>
+    <string name="title_activity_my_frame_tool">MyFrameToolActivity</string>
+    <string name="error_search">SEARCH_ERROR</string>
+    <string name="ultralight_test">UltraLight Test</string>
+    <string name="loading_card_types">Loading card types</string>
+    <string name="the_device_does_not_support_android_standard_nfc">The device does not support Android standard NFC</string>
+    <string name="open_the_nfc_switch">Go to settings and turn on the NFC switch</string>
+    <string name="please_swipe_your_card">Please swipe your card</string>
+    <string name="not_nfc">The device does not support Android standard NFC</string>
+
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">This is an app widget description</string>
+    <string name="map_key">AIzaSyBSmhzaQzy3EkEmPsa54oO5JBKrLjDzAaw</string>
+    <string name="notification_channel_name">notification channe</string>
+    <string name="notification_channel_description">notification_channel_description</string>
+    <string name="title_file_download">Downloading File</string>
+    <string name="downloading_file">Downloading in progress…</string>
+    <string name="download_completed">Download completed successfully</string>
+    <string name="registration">Registration</string>
+    <string name="enter_name">Enter Name</string>
+
+    <string name="face_register_ok">Face Registered Successfully</string>
+    <string name="location_permissions">You will not be able to use the app without location permissions</string>
+    <string name="enable_location_permissions"><![CDATA[To enable permissions go to permissions->Location->Allow]]></string>
+    <string name="please_wait">Please wait…</string>
+    <string name="preparing_to_download">Preparing the transaction…</string>
+
+    <string name="progress_msg">Please wait…</string>
+
+    <string name="recover_password">Recover password</string>
+    <string name="register_device">Register device</string>
+
+    <string name="continue_btn">Continue</string>
+    <string name="permission_description">In order to use this application we will first need to request location permission from you. Otherwise we will not be able to provide you with our service. If you agree and wish to continue tap on the button below.</string>
+    <string name="permission_required">Permission Required</string>
+
+    <string name="permission_location_description">To use this application, we first need to request your location permission. Otherwise, we won\'t be able to provide our service. If you agree and wish to proceed, please tap the button below.</string>
+    <string name="permission_location_required">Location Permission</string>
+
+    <string name="permission_activity_description">To use this application, we first need to request your physical activity permission. Otherwise, we won\'t be able to provide our service. If you agree and wish to proceed, please tap the button below.</string>
+    <string name="permission_activity_required">Physical Activity Permission</string>
+
+    <string name="permission_camera_description">To use this application, we need to request permission to access your device\'s camera. This permission is necessary for you to take photos or record videos within the app. If you agree and wish to proceed, please tap the button below.</string>
+    <string name="permission_camera_required">Camera Access Permission</string>
+
+    <string name="permission_storage_description">To use this application, we need to request permission to write to your device\'s external storage. This permission is essential for saving and managing files within the app. If you agree and wish to proceed, please tap the button below.</string>
+    <string name="permission_storage_required">External Storage Access Permission</string>
+
+    <string name="permission_boot_description">To use this application properly, we need to request permission to receive notifications when the device restarts. This is necessary to ensure that the app can resume its functions automatically after a system restart. If you agree and wish to proceed, please tap the button below.</string>
+    <string name="permission_boot_required">Permission to Receive System Restart Notifications</string>
+
+    <string name="permission_draw_description">To use this application, we first need to request permission to draw over other apps. Otherwise, we won\'t be able to offer all the functionalities. If you agree and wish to proceed, please tap the button below.</string>
+    <string name="permission_draw_required">Permission to Draw Over Other Apps (optional)</string>
+
+    <string name="permission_recording_description">For this application to work properly, we need to enable permission to record audio. This permission is necessary to record and store audio within the app. Please go to the app settings and enable the permission to continue.</string>
+    <string name="permission_recording_required">Audio Recording Permission</string>
+
+    <string name="permission_phone_description">For this application to work properly, we need to enable permission to access phone calls. This permission is necessary to manage and make calls from the app. Please go to the app settings and enable the permission to continue.</string>
+    <string name="permission_phone_required">Phone Call Access Permission</string>
+
+    <string name="permission_sms_description">For this application to work properly, we need to enable permission to read and send SMS messages. This permission is essential for managing messages within the app. Please go to the app settings and enable the permission to continue.</string>
+    <string name="permission_sms_required">Read and Send SMS Permission</string>
+
+    <string name="permission_notification_description">To use this application effectively, we need your permission to send you notifications. Without this permission, you may miss important updates and alerts. If you agree, please tap the button below to continue.</string>
+    <string name="permission_notification_required">Notification Permission</string>
+
+    <string name="turn_on_flashlight">Turn on flashlight</string>
+    <string name="battery_low">Battery Low</string>
+    <string name="battery_low_message">Your battery is too low for NFC to function. Please charge your device to use NFC.</string>
+    <string name="face_detection_message">Por favor, asegúrate de que tu rostro esté centrado en la cámara. Espera a que sea detectado antes de proceder con el registro.</string>
+    <string name="qr_scanner_state">qr scanner</string>
+    <string name="score">Score</string>
+
+    <!--ADD MOB-->
+    <string name="app_test_id_add" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="app_id_add" />
+
+    <string name="banner_test_id_add" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="banner_id_add" translatable="false"> </string>
+
+    <string name="interstitial_test_id_add" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
+
+    <string name="rewardedInterstitial_test_id_add" translatable="false">ca-app-pub-3940256099942544/5354046379</string>
+    <!--GEO APY KEY-->
+    <string name="geo_api_key">AIzaSyB8T17nR7sWzWJ9v0lQE9Chp7SUxUlGoCc</string>
+    <string name="title_activity_main2">MainActivity2</string>
+</resources>

@@ -1,0 +1,83 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.MyShellApplicationKotlinXML" parent="android:Theme.Material.Light.NoActionBar">
+        <!-- Primary Colors
+        <item name="colorPrimary">@color/primaryLight</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
+    <item name="android:statusBarColor">@color/primaryDark</item>  Status bar -->
+
+        <!-- Background Colors
+        <item name="android:windowBackground">@color/backgroundDark</item>
+        <item name="backgroundColor">@color/backgroundDark</item>-->
+
+        <!-- Text Colors
+        <item name="android:textColorPrimary">@color/primaryText</item>
+        <item name="android:textColorSecondary">@color/secondaryText</item>
+        <item name="android:textColorHint">@color/hintText</item>-->
+
+        <!-- Navigation Bar
+        <item name="android:navigationBarColor">@color/secondaryLight</item>-->
+
+        <!-- Accent Color
+        <item name="android:colorAccent">@color/colorAccent</item> Line in input text, progress bar, and radio buttons
+        <item name="colorControlNormal">@color/primaryLight</item>
+         Button Styles
+        <item name="buttonStyle">@style/MyButtonStyle</item>
+        <item name="android:buttonStyle">@style/MyButtonStyle</item>-->
+
+        <!-- EditText Styles
+        <item name="editTextStyle">@style/MyEditTextStyle</item>
+        <item name="android:editTextStyle">@style/MyEditTextStyle</item>-->
+
+        <!-- Spinner Styles
+        <item name="spinnerStyle">@style/MySpinnerStyle</item>
+        <item name="android:spinnerStyle">@style/MySpinnerStyle</item>-->
+
+        <!-- Switch Styles
+        <item name="switchStyle">@style/MySwitchStyle</item>
+        <item name="android:switchStyle">@style/MySwitchStyle</item>-->
+
+        <!-- Toolbar Styles
+        <item name="toolbarStyle">@style/MyToolbarStyle</item>
+        <item name="android:toolbarStyle">@style/MyToolbarStyle</item>-->
+
+        <!-- Window Styles
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>-->
+
+        <!-- Icon Tint
+        <item name="iconTint">@color/primaryText</item>-->
+    </style>
+    <!-- Button Style
+    <style name="MyButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:background">@color/buttonBackground</item>
+        <item name="android:textColor">@color/buttonText</item>
+        <item name="colorControlHighlight">@color/black</item>
+    </style>-->
+
+    <!-- EditText Style
+    <style name="MyEditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@drawable/shape_rectangle</item>
+        <item name="android:textColor">@color/editTextText</item>
+        <item name="android:hint">@color/hintText</item>
+    </style>-->
+
+    <!-- Spinner Style
+    <style name="MySpinnerStyle" parent="Widget.AppCompat.Spinner">
+        <item name="android:background">@color/spinnerBackground</item>
+        <item name="android:popupBackground">@color/spinnerPopupBackground</item>
+    </style>-->
+
+    <!-- Switch Style
+    <style name="MySwitchStyle" parent="Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:thumb">@drawable/switch_thumb</item>
+        <item name="android:track">@drawable/switch_track</item>
+    </style>-->
+
+    <!-- Toolbar Style
+    <style name="MyToolbarStyle" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">@color/toolbarBackground</item>
+        <item name="android:titleTextColor">@color/toolbarText</item>
+    </style>-->
+</resources>
