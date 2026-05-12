@@ -10,15 +10,18 @@ import avill.ladv.chordo.data.network.RemoteDataSource
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
-class ChordsViewModel  @Inject constructor(
+class ChordoViewModel
+@Inject constructor(
     private val repository: Repository,
 ) : ViewModel() {
-
+    private val _uiState = MutableStateFlow(ChordoUiState())
+    val uiState: StateFlow<ChordoUiState> = _uiState
     private val _chords = mutableStateOf(
         Chords(arrayListOf(),"",0)
     )
@@ -29,15 +32,15 @@ class ChordsViewModel  @Inject constructor(
             try{
                 val chords = repository.remoteDataSource.apiChords.getAll()
                 _chords.value = chords
-                
+
                 // Save the response to an internal file
                 val json = Gson().toJson(chords)
                 repository.getMyFilesManager().save("chords_cache.json", json)
-                
+
                 Log.v(RemoteDataSource::class.simpleName,"isSuccessful ")
             }catch (e: Exception) {
                 Log.e(RemoteDataSource::class.simpleName, "Error ${e}")
-                
+
                 // If there is no internet or another error, recover data from the file
                 try {
                     val json = repository.getMyFilesManager().getInformation("chords_cache.json")

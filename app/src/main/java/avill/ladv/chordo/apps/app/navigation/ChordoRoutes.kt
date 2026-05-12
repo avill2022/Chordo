@@ -1,10 +1,11 @@
 package avill.ladv.chordo.apps.app.navigation
 
-sealed class MainScreen(val route: String) {
-    object Main : MainScreen("main")
-    object Splash : MainScreen("splash")
-    object OnBoarding : MainScreen("onboarding")
-    object Permissions : MainScreen("permissions")
+sealed class Chordo(val route: String) {
+    object Main : Chordo("main")
+    object Splash : Chordo("splash")
+    object OnBoarding : Chordo("onboarding")
+    object Permissions : Chordo("permissions")
+    object List : Chordo("list")
 
     fun withArgs(vararg args: String): String {
         return buildString {
@@ -37,21 +38,4 @@ sealed class BottomBarScreen(val route: String, val title: String) {
     object Profile : BottomBarScreen("profile", "Profile")
 }
 
-sealed class ProfileScreen(val route: String) {
-    object Settings : ProfileScreen("settings")
-    object About : ProfileScreen("about")
-}
 
-// Keep existing ones for compatibility if they are being used elsewhere, 
-// but consolidate them or mark them as legacy if needed.
-sealed class CompositionsScreen(val route: String) {
-    object CompositionsIndex : CompositionsScreen("compositions/index")
-}
-
-sealed class TutorialsScreen(val route: String) {
-    object TutorialIndex : TutorialsScreen("tutorial/index")
-}
-
-sealed class AnimationsScreen(val route: String) {
-    object AnimationIndex : AnimationsScreen("animation/index")
-}

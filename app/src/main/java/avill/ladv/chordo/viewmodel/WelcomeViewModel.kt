@@ -6,7 +6,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import avill.ladv.chordo.apps.app.navigation.MainScreen
+import avill.ladv.chordo.apps.app.navigation.Chordo
 import avill.ladv.chordo.data.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -24,16 +24,16 @@ class WelcomeViewModel @Inject constructor(
     private val _isLoading: MutableState<Boolean> = mutableStateOf(true)
     val isLoading: State<Boolean> = _isLoading
 
-    private val _startDestination: MutableState<String> = mutableStateOf(MainScreen.Splash.route)
+    private val _startDestination: MutableState<String> = mutableStateOf(Chordo.Splash.route)
     val startDestination: State<String> = _startDestination
 
     init {
         viewModelScope.launch {
             repository.localDataSource.readOnBoardingState().collect { completed ->
                 if (completed) {
-                    _startDestination.value = MainScreen.Permissions.route
+                    _startDestination.value = Chordo.Permissions.route
                 } else {
-                    _startDestination.value = MainScreen.Splash.route
+                    _startDestination.value = Chordo.Splash.route
                 }
             }
             _isLoading.value = false

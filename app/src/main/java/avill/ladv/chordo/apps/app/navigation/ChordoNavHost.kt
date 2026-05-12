@@ -7,7 +7,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalFoundationApi::class)
 @Composable
@@ -19,15 +18,15 @@ fun NavHostMain(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = MainScreen.Splash.route
+        startDestination = Chordo.Splash.route
     ) {
-        composable(MainScreen.Splash.route) {
+        composable(Chordo.Splash.route) {
 
         }
-        composable(MainScreen.OnBoarding.route) {
+        composable(Chordo.OnBoarding.route) {
 
         }
-        composable(MainScreen.Permissions.route) {
+        composable(Chordo.Permissions.route) {
 
         }
         //Components
