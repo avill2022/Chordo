@@ -107,7 +107,8 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     //todo Retrofit
     implementation(libs.retrofit)
-    implementation(libs.converter.gson)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.retrofit.converter.scalars)
     //implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.3")
     //todo okhttp3
     implementation(platform("com.squareup.okhttp3:okhttp-bom:5.1.0"))

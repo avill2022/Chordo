@@ -13,6 +13,7 @@ import avill.ladv.chordo.apps.app.model.Song
 import avill.ladv.chordo.data.local.db.room.entities.FavoriteSong
 import avill.ladv.chordo.data.local.db.room.entities.Playlist
 import avill.ladv.chordo.data.local.db.room.entities.PlaylistSong
+import avill.ladv.chordo.data.network.retrofit.APIClients.chordoApiService
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -227,6 +228,75 @@ class ChordoViewModel
                 }
             } catch (e: Exception) {
                 Log.e("ChordoViewModel", "Error restoring song: ${e.message}")
+            }
+        }
+    }
+    //api
+    suspend fun getChords(): Result<String> {
+        return try {
+            val response = chordoApiService.getChords()
+            if (response.isSuccessful) {
+                val jsonString = response.body()
+                if (jsonString != null) {
+                    Result.success(jsonString)
+                } else {
+                    Result.failure(Exception("Empty response body"))
+                }
+            } else {
+                Result.failure(Exception("HTTP ${response.code()}: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    /**
+     * Save repositories to remote server
+     */
+    suspend fun saveChords(jsonString: String): Result<String> {
+        return try {
+            val response = chordoApiService.saveChords(jsonString)
+            if (response.isSuccessful) {
+                val responseBody = response.body()
+                if (responseBody != null) {
+                    Result.success(responseBody)
+                } else {
+                    Result.success("Saved successfully")
+                }
+            } else {
+                Result.failure(Exception("HTTP ${response.code()}: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    fun uploadChords() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val json = Gson().toJson(_chords.value)
+            val result = saveChords(json)
+            if (result.isSuccess) {
+                Log.v("ChordoViewModel", "Upload successful: ${result.getOrNull()}")
+            } else {
+                Log.e("ChordoViewModel", "Upload failed: ${result.exceptionOrNull()?.message}")
+            }
+        }
+    }
+
+    fun downloadChords() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = getChords()
+            result.onSuccess { jsonString ->
+                try {
+                    val chordsFromFile = Gson().fromJson(jsonString, Chords::class.java)
+                    _chords.value = chordsFromFile
+                    updateFilteredSongs()
+                    repository.getMyFilesManager().save("chords_cache.json", jsonString)
+                    Log.v("ChordoViewModel", "Download and update successful")
+                } catch (e: Exception) {
+                    Log.e("ChordoViewModel", "Error parsing downloaded chords: ${e.message}")
+                }
+            }.onFailure {
+                Log.e("ChordoViewModel", "Download failed: ${it.message}")
             }
         }
     }

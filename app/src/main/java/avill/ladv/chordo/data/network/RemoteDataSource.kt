@@ -3,6 +3,7 @@ package avill.ladv.chordo.data.network
 import android.util.Log
 import avill.ladv.chordo.data.network.okhttpclient.MyOkHttpInterface
 import avill.ladv.chordo.data.network.retrofit.APIClients
+import avill.ladv.chordo.data.network.retrofit.GenericApiService
 import avill.ladv.chordo.data.network.socket.SocketClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +29,9 @@ class RemoteDataSource {
     //okhttp
     var myOkHttpInterface: MyOkHttpInterface = MyOkHttpInterface()
 
-    var apiChords = APIClients.getChordsApiClient(chords_api)
+    var apiChords = APIClients.getGenericApiClient(chords_api, GenericApiService::class.java)
+    var apiChordo = APIClients.chordoApiService
+
 
     //socket
     var socketClient: SocketClient = SocketClient("11.11.11.11",5050,"name","message","#43433")

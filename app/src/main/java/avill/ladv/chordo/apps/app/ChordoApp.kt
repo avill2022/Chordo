@@ -73,13 +73,9 @@ fun ChordoApp(viewModel: ChordoViewModel) {
                 onCreateClick = {
                     navController.navigate(Chordo.Edit.route)
                 },
-                onEditClick = { song ->
-                    val index = viewModel.chords.value.songs.indexOf(song)
-                    if (index != -1) {
-                        navController.navigate(Chordo.Edit.route + "/$index")
-                    }
-                },
-                onSyncClick = { viewModel.getTabs() }
+                onSyncClick = { viewModel.getTabs() },
+                onUploadClick = { viewModel.uploadChords() },
+                onDownloadClick = { viewModel.downloadChords() }
             )
         }
 
@@ -122,6 +118,9 @@ fun ChordoApp(viewModel: ChordoViewModel) {
                     onCreatePlaylist = { name -> viewModel.createPlaylist(name) },
                     onTranspose = { semitones -> viewModel.transposeSong(it, semitones) },
                     onRestore = { viewModel.restoreSong(it) },
+                    onEditClick = {
+                        navController.navigate(Chordo.Edit.route + "/$songId")
+                    },
                     onBackClick = { navController.popBackStack() }
                 )
             }

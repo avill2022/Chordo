@@ -23,8 +23,9 @@ fun SongsListScreen(
     onSearchTextChange: (String) -> Unit,
     onSongClick: (Song) -> Unit,
     onCreateClick: () -> Unit,
-    onEditClick: (Song) -> Unit,
-    onSyncClick: () -> Unit
+    onSyncClick: () -> Unit,
+    onUploadClick: () -> Unit,
+    onDownloadClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -46,6 +47,21 @@ fun SongsListScreen(
                 }
             }
         },
+        bottomBar = {
+            BottomAppBar {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    TextButton(onClick = onUploadClick) {
+                        Text("Upload")
+                    }
+                    TextButton(onClick = onDownloadClick) {
+                        Text("Download")
+                    }
+                }
+            }
+        },
         floatingActionButton = {
             FloatingActionButton(onClick = onCreateClick) {
                 Icon(Icons.Default.Add, contentDescription = "Add Song")
@@ -60,8 +76,7 @@ fun SongsListScreen(
             itemsIndexed(songs) { _, song ->
                 SongItem(
                     song = song,
-                    onClick = { onSongClick(song) },
-                    onEditClick = { onEditClick(song) }
+                    onClick = { onSongClick(song) }
                 )
             }
         }
@@ -71,8 +86,7 @@ fun SongsListScreen(
 @Composable
 fun SongItem(
     song: Song,
-    onClick: () -> Unit,
-    onEditClick: () -> Unit
+    onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -84,9 +98,6 @@ fun SongItem(
         Column(modifier = Modifier.weight(1f)) {
             Text(text = song.name, fontSize = 18.sp)
             Text(text = song.folder, fontSize = 14.sp)
-        }
-        IconButton(onClick = onEditClick) {
-            Icon(Icons.Default.Edit, contentDescription = "Edit Song")
         }
     }
 }

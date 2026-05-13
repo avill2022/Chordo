@@ -13,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.List
@@ -55,6 +56,7 @@ fun LyricsScreen(
     onCreatePlaylist: (String) -> Unit,
     onTranspose: (Int) -> Unit,
     onRestore: () -> Unit,
+    onEditClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
     var showPlaylistDialog by remember { mutableStateOf(false) }
@@ -85,6 +87,9 @@ fun LyricsScreen(
                     }
                 },
                 actions = {
+                    IconButton(onClick = onEditClick) {
+                        Icon(Icons.Default.Edit, contentDescription = "Edit Song")
+                    }
                     IconButton(onClick = { isAutoScrolling = !isAutoScrolling }) {
                         Icon(
                             imageVector = if (isAutoScrolling) Icons.Default.PlayArrow else Icons.Default.PlayArrow, // Need a Pause icon
