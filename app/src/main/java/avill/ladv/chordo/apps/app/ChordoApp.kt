@@ -1,19 +1,9 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class)
 
 package avill.ladv.chordo.apps.app
 
 import android.content.res.Configuration
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Text
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -21,101 +11,35 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import avill.ladv.chordo.apps.app.navigation.Chordo
-import avill.ladv.chordo.apps.app.navigation.NavHostMain
-import avill.ladv.chordo.apps.app.navigation.addNewScreens
-
-
-
-data class Song(
-    val name: String,
-    val folder: String,
-    val content: String
-)
-
-data class Chords(
-    val songs: List<Song>,
-    val title: String,
-    val id: Int
-)
-
-@Composable
-fun SongsListScreen(
-    chords: Chords,
-    onSongClick: (Int) -> Unit
-) {
-    LazyColumn {
-        items(chords.songs.size) { song ->
-            SongItem(song = chords.songs.get(song), onClick = {
-                onSongClick(song)
-            })
-        }
-    }
-}
-@Composable
-fun SongItem(
-    song: Song,
-    onClick: () -> Unit
-) {
-    Column(
-        modifier = Modifier.clickable { onClick() }
-            .padding(16.dp).fillMaxWidth()
-    ) {
-        Text(text = song.name, fontSize = 18.sp)
-        Text(text = song.folder, fontSize = 14.sp)
-    }
-}
-
-
-@Composable
-fun LyricsScreen(lyrics: String) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Text(
-            text = lyrics,
-            modifier = Modifier.verticalScroll(rememberScrollState())
-        )
-    }
-}
-
-
-
-
-
-
-
-
-
-
+import avill.ladv.chordo.apps.app.uiscreens.LyricsScreen
+import avill.ladv.chordo.apps.app.uiscreens.SongEditScreen
+import avill.ladv.chordo.apps.app.uiscreens.SongsListScreen
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun NamePreviewDark() {
     ChordoApp(
-        viewModel = hiltViewModel() // Assuming MainViewModel has a default constructor
+        viewModel = hiltViewModel()
     )
 }
+
 @Preview
 @Composable
 fun NamePreview() {
     ChordoApp(
-        viewModel = hiltViewModel() // Assuming MainViewModel has a default constructor
+        viewModel = hiltViewModel()
     )
 }
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun ChordoApp(viewModel: ChordoViewModel) {
     val context = LocalContext.current
-    //val uiState by viewModel.uiState.collectAsState()
     val navController = rememberNavController()
     viewModel.getTabs()
     val uiState by viewModel.uiState.collectAsState()
@@ -123,31 +47,70 @@ fun ChordoApp(viewModel: ChordoViewModel) {
     NavHost(
         modifier = Modifier,
         navController = navController,
-        startDestination = Chordo.Splash.route
+        startDestination = Chordo.List.route
     ) {
         composable(Chordo.Splash.route) {
-
+            // Splash Screen
         }
         composable(Chordo.OnBoarding.route) {
-
+            // OnBoarding Screen
         }
         composable(Chordo.Permissions.route) {
-
+            // Permissions Screen
         }
-        //Components
+        
         composable(Chordo.List.route) {
             SongsListScreen(
-                chords = viewModel.chords.value,
-                onSongClick = { songId ->
-                    navController.navigate("lyrics/$songId")
+                songs = uiState.filteredSongs,
+                searchText = uiState.searchText,
+                onSearchTextChange = { viewModel.onSearchTextChange(it) },
+                onSongClick = { song ->
+                    val index = viewModel.chords.value.songs.indexOf(song)
+                    if (index != -1) {
+                        navController.navigate("lyrics/$index")
+                    }
+                },
+                onCreateClick = {
+                    navController.navigate(Chordo.Edit.route)
+                },
+                onEditClick = { song ->
+                    val index = viewModel.chords.value.songs.indexOf(song)
+                    if (index != -1) {
+                        navController.navigate(Chordo.Edit.route + "/$index")
+                    }
                 }
             )
         }
+
+        composable(Chordo.Edit.route) {
+            SongEditScreen(
+                song = null,
+                onSave = {
+                    viewModel.saveSong(it)
+                    navController.popBackStack()
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Chordo.Edit.route + "/{songId}") { backStackEntry ->
+            val songId = backStackEntry.arguments?.getString("songId")?.toInt()
+            val song = songId?.let { viewModel.getSongById(it) }
+            SongEditScreen(
+                song = song,
+                onSave = {
+                    viewModel.saveSong(it)
+                    navController.popBackStack()
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
+        
         composable("lyrics/{songId}") { backStackEntry ->
             val songId = backStackEntry.arguments?.getString("songId")?.toInt()
-            val chord = songId?.let { viewModel.getSongById(it) }
+            val song = songId?.let { viewModel.getSongById(it) }
 
-            chord?.let {
+            song?.let {
                 LyricsScreen(lyrics = it.content)
             }
         }

@@ -6,6 +6,7 @@ sealed class Chordo(val route: String) {
     object OnBoarding : Chordo("onboarding")
     object Permissions : Chordo("permissions")
     object List : Chordo("list")
+    object Edit : Chordo("edit")
 
     fun withArgs(vararg args: String): String {
         return buildString {

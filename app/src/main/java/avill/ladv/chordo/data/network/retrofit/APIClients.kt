@@ -11,7 +11,7 @@ object APIClients {
     private var retrofit: Retrofit? = null
     fun getChordsApiClient(baseUrl:String): GenericApiService {
        // val interceptor = HttpLoggingInterceptor()
-      //  interceptor.level = HttpLoggingInterceptor.Level.BODY
+       // interceptor.level = HttpLoggingInterceptor.Level.BODY
        // val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
         retrofit = Retrofit.Builder()
             .baseUrl(baseUrl)
@@ -23,14 +23,10 @@ object APIClients {
             .build()
         return retrofit!!.create(GenericApiService::class.java)
     }
-
-
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(AuthInterceptor())
         .addInterceptor(HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         })
         .build()
-
-
 }

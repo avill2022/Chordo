@@ -29,14 +29,6 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     val chordoViewModel : ChordoViewModel by viewModels()
 
-    private val cameraPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (!isGranted) {
-            // Handle permission denied (e.g., show a message)
-        }
-    }
-
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("ViewModelConstructorInComposable")
     @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class,
@@ -45,34 +37,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val splashScreen = installSplashScreen()
-        splashScreen.setKeepOnScreenCondition{true}
+        //splashScreen.setKeepOnScreenCondition{true}
         CoroutineScope(Dispatchers.Main).launch {
-            delay(20)
-            splashScreen.setKeepOnScreenCondition{false}
+            //delay(20)
+            //splashScreen.setKeepOnScreenCondition{false}
         }
-        createMediaNotificationChannel(this)
-        
-        if (!hasCameraPermission()) {
-            cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
-        }
-
         setContent {
             AppNameTheme {
                 ChordoApp(chordoViewModel)
             }
-        }
-    }
-    fun createMediaNotificationChannel(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                "media_playback_channel",
-                "Media Playback",
-                NotificationManager.IMPORTANCE_LOW
-            )
-
-            val manager =
-                context.getSystemService(NotificationManager::class.java)
-            manager.createNotificationChannel(channel)
         }
     }
 }
