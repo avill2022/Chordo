@@ -78,7 +78,8 @@ fun ChordoApp(viewModel: ChordoViewModel) {
                     if (index != -1) {
                         navController.navigate(Chordo.Edit.route + "/$index")
                     }
-                }
+                },
+                onSyncClick = { viewModel.getTabs() }
             )
         }
 
@@ -111,7 +112,18 @@ fun ChordoApp(viewModel: ChordoViewModel) {
             val song = songId?.let { viewModel.getSongById(it) }
 
             song?.let {
-                LyricsScreen(lyrics = it.content)
+                viewModel.checkIfFavorite(it)
+                LyricsScreen(
+                    song = it,
+                    isFavorite = uiState.isCurrentSongFavorite,
+                    playlists = uiState.playlists,
+                    onFavoriteClick = { viewModel.toggleFavorite(it) },
+                    onAddToPlaylistClick = { playlistId -> viewModel.addSongToPlaylist(it, playlistId) },
+                    onCreatePlaylist = { name -> viewModel.createPlaylist(name) },
+                    onTranspose = { semitones -> viewModel.transposeSong(it, semitones) },
+                    onRestore = { viewModel.restoreSong(it) },
+                    onBackClick = { navController.popBackStack() }
+                )
             }
         }
     }

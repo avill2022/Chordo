@@ -6,9 +6,10 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.room.Room
 import avill.ladv.chordo.data.local.db.room.AppDatabase
+import avill.ladv.chordo.data.local.db.room.FavoriteSongDao
 import avill.ladv.chordo.data.local.db.room.NoteDao
-import avill.ladv.chordo.data.local.db.room.entities.ModelEntity
-import avill.ladv.chordo.data.local.db.room.entities.Note
+import avill.ladv.chordo.data.local.db.room.PlaylistDao
+import avill.ladv.chordo.data.local.db.room.entities.*
 import avill.ladv.chordo.data.local.files.MyFilesManager
 import avill.ladv.chordo.data.local.shared.MySharedPreferences
 import avill.ladv.chordo.util.dataStore
@@ -30,7 +31,33 @@ class LocalDataSource @Inject constructor(val context: Context) {
         const val PREFERENCE_FIRST_LAUNCH = "firstLaunch"
     }
     //local resources------------------------------------------------------------------------------
-    val noteDao: NoteDao = Room.databaseBuilder(context, AppDatabase::class.java,"note_db").build().noteDao()
+    private val db = Room.databaseBuilder(context, AppDatabase::class.java,"note_db").fallbackToDestructiveMigration().build()
+    val noteDao: NoteDao = db.noteDao()
+    val favoriteSongDao: FavoriteSongDao = db.favoriteSongDao()
+    val playlistDao: PlaylistDao = db.playlistDao()
+
+    suspend fun createPlaylist(name: String) = playlistDao.insertPlaylist(Playlist(name = name))
+    suspend fun deletePlaylist(playlist: Playlist) = playlistDao.deletePlaylist(playlist)
+    fun getAllPlaylists(): Flow<List<Playlist>> = playlistDao.getAllPlaylists()
+    
+    suspend fun addSongToPlaylist(playlistSong: PlaylistSong) = playlistDao.insertSongInPlaylist(playlistSong)
+    suspend fun removeSongFromPlaylist(playlistId: Long, name: String, folder: String) = 
+        playlistDao.deleteSongFromPlaylist(playlistId, name, folder)
+    fun getSongsInPlaylist(playlistId: Long): Flow<List<PlaylistSong>> = playlistDao.getSongsInPlaylist(playlistId)
+
+    suspend fun addFavorite(favorite: FavoriteSong) {
+        favoriteSongDao.insertFavorite(favorite)
+    }
+
+    suspend fun removeFavorite(name: String, folder: String) {
+        favoriteSongDao.deleteFavoriteByNameAndFolder(name, folder)
+    }
+
+    fun getAllFavorites(): Flow<List<FavoriteSong>> = favoriteSongDao.getAllFavorites()
+
+    suspend fun isFavorite(name: String, folder: String): Boolean {
+        return favoriteSongDao.getFavoriteByNameAndFolder(name, folder) != null
+    }
 
     suspend fun addNote(wish:Note){
         noteDao.insertNote(wish)
@@ -52,7 +79,7 @@ class LocalDataSource @Inject constructor(val context: Context) {
 
 
     //bd
-    var entityDao = Room.databaseBuilder(context, AppDatabase::class.java,DATABASE_NAME).build().nameDao()
+    var entityDao = Room.databaseBuilder(context, AppDatabase::class.java,DATABASE_NAME).fallbackToDestructiveMigration().build().nameDao()
     suspend fun dbTest() {
         //insert
         entityDao.insertModel(ModelEntity(
