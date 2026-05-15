@@ -12,7 +12,7 @@ object APIClients {
         .baseUrl("https://avillsoftware.com/chordo/")
         .addConverterFactory(ScalarsConverterFactory.create())
         .build()
-    val chordoApiService: ChorddoApiService = retrofitChordo.create(ChorddoApiService::class.java)
+    val chordoApiService: ChordoApiService = retrofitChordo.create(ChordoApiService::class.java)
     //----------------------------------------------------------------------------------------------
     private var retrofit: Retrofit? = null
     fun getGenericApiClient(baseUrl:String,service: Class<GenericApiService>): GenericApiService {

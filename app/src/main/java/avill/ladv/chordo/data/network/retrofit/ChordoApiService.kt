@@ -5,7 +5,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 
-interface ChorddoApiService {
+interface ChordoApiService {
     @GET("apis/get_chords.php")
     suspend fun getChords(): Response<String>
     @POST("apis/save_chords.php")
