@@ -6,10 +6,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import avill.ladv.chordo.apps.app.helpers.ChordTransposer
 import avill.ladv.chordo.apps.app.model.Song
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,25 +88,54 @@ fun SongEditScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Name") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = folder, onValueChange = { folder = it }, label = { Text("Folder/Artist") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = author, onValueChange = { author = it }, label = { Text("Author") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = tone, onValueChange = { tone = it }, label = { Text("Tone") }, modifier = Modifier.fillMaxWidth())
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedTextField(
+                    value = chords,
+                    onValueChange = { chords = it },
+                    label = { Text("Chords") },
+                    modifier = Modifier.weight(1f)
+                )
+                IconButton(
+                    onClick = {
+                        val uniqueChords = ChordTransposer.getUniqueChords(content)
+                        chords = uniqueChords.joinToString(" ")
+                        if (tone.isBlank()) {
+                            tone = uniqueChords.firstOrNull() ?: ""
+                        }
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = "Extract Chords from lyrics"
+                    )
+                }
+            }
+            OutlinedTextField(value = rhythm, onValueChange = { rhythm = it }, label = { Text("Rhythm") }, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(value = tempo, onValueChange = { tempo = it }, label = { Text("Tempo") }, modifier = Modifier.fillMaxWidth())
+
+
             OutlinedTextField(value = content, onValueChange = { content = it }, label = { Text("Content/Lyrics") }, modifier = Modifier.fillMaxWidth(), minLines = 5)
-            OutlinedTextField(value = chords, onValueChange = { chords = it }, label = { Text("Chords") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = tab, onValueChange = { tab = it }, label = { Text("Tab") }, modifier = Modifier.fillMaxWidth())
             
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
             Text("Details", style = MaterialTheme.typography.titleMedium)
             
-            OutlinedTextField(value = rhythm, onValueChange = { rhythm = it }, label = { Text("Rhythm") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = tempo, onValueChange = { tempo = it }, label = { Text("Tempo") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = harmony, onValueChange = { harmony = it }, label = { Text("Harmony") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = melody, onValueChange = { melody = it }, label = { Text("Melody") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = structure, onValueChange = { structure = it }, label = { Text("Structure") }, modifier = Modifier.fillMaxWidth())
             
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
             Text("URLs", style = MaterialTheme.typography.titleMedium)
-            
+
+            OutlinedTextField(value = folder, onValueChange = { folder = it }, label = { Text("Folder/Artist") }, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(value = author, onValueChange = { author = it }, label = { Text("Author") }, modifier = Modifier.fillMaxWidth())
+
+
             OutlinedTextField(value = urlsong, onValueChange = { urlsong = it }, label = { Text("Song URL") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = urltutorial, onValueChange = { urltutorial = it }, label = { Text("Tutorial URL") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = urlmidi, onValueChange = { urlmidi = it }, label = { Text("MIDI URL") }, modifier = Modifier.fillMaxWidth())

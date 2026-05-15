@@ -10,6 +10,14 @@ object ChordTransposer {
         "Db" to "C#", "Eb" to "D#", "Gb" to "F#", "Ab" to "G#", "Bb" to "A#"
     )
 
+    // Regex for chord detection:
+    // (?<=\s|^|-) : Positive lookbehind for space, start of line, or hyphen.
+    // -? : Optional leading hyphen.
+    // ([A-G][#b]?(?:m|maj|min|dim|aug|sus|add|M|6|7|9|11|13|maj7|m7|sus[24]|add[249])*\d*) : Root and suffix (Group 1).
+    // -? : Optional trailing hyphen.
+    // (?=\s|$|-) : Positive lookahead for space, end of line, or hyphen.
+    val chordRegex = """(?<=\s|^|-)-?([A-G][#b]?(?:m|maj|min|dim|aug|sus|add|M|6|7|9|11|13|maj7|m7|sus[24]|add[249])*\d*)-?(?=\s|$|-)""".toRegex()
+
     /**
      * Main transpose function
      * @param songText The song with chords
@@ -24,54 +32,40 @@ object ChordTransposer {
     }
 
     /**
-     * Transpose a single line of text
+     * Removes all chords from the text, returning only the lyrics.
+     * @param text The song with chords.
+     * @return Clean text without chords.
      */
-    private fun transposeLine(line: String, semitones: Int): String {
-        val result = StringBuilder()
-        var i = 0
-
-        while (i < line.length) {
-            when {
-                // Check if current character is part of a chord (letter A-G)
-                line[i].isLetter() && line[i].uppercase() in "ABCDEFG" -> {
-                    val chord = extractChord(line, i)
-                    val transposedChord = transposeChord(chord, semitones)
-                    result.append(transposedChord)
-                    i += chord.length
-                }
-                else -> {
-                    result.append(line[i])
-                    i++
-                }
-            }
-        }
-
-        return result.toString()
+    fun removeChords(text: String): String {
+        val lines = text.lines()
+        return lines.map { line ->
+            chordRegex.replace(line, "").trimEnd()
+        }.filterIndexed { index, cleaned ->
+            // Keep the line if it still has content, OR if it was originally an empty line.
+            // This removes lines that were purely chords while preserving intended spacing.
+            cleaned.isNotEmpty() || lines[index].isEmpty()
+        }.joinToString("\n")
     }
 
     /**
-     * Extract full chord starting at position i
+     * Extracts a list of unique chords from the provided text.
+     * @param text The song text containing chords.
+     * @return List of unique chords found in the text.
      */
-    private fun extractChord(line: String, startIdx: Int): String {
-        var endIdx = startIdx
-        val firstChar = line[startIdx].uppercase()
+    fun getUniqueChords(text: String): List<String> {
+        return chordRegex.findAll(text)
+            .map { it.groupValues[1] } // Extracts the core chord part
+            .distinct()
+            .toList()
+    }
 
-        // Check for sharp or flat after the root note
-        if (endIdx + 1 < line.length && (line[endIdx + 1] == '#' || line[endIdx + 1] == 'b')) {
-            endIdx++
+    /**
+     * Transpose a single line of text using a regular expression to detect chords.
+     */
+    private fun transposeLine(line: String, semitones: Int): String {
+        return chordRegex.replace(line) { matchResult ->
+            transposeChord(matchResult.value, semitones)
         }
-
-        // Continue to get chord suffix (m, maj, 7, sus, etc.)
-        while (endIdx + 1 < line.length) {
-            val nextChar = line[endIdx + 1]
-            if (nextChar.isLetterOrDigit() || nextChar in setOf('m', 'M', '7', '9', '1', '2', '3', '4', '5', '6', 's', 'u', 'a', 'j', 'd', 'i', 'm', 'M')) {
-                endIdx++
-            } else {
-                break
-            }
-        }
-
-        return line.substring(startIdx, endIdx + 1)
     }
 
     /**
@@ -80,30 +74,25 @@ object ChordTransposer {
     private fun transposeChord(chord: String, semitones: Int): String {
         if (chord.isEmpty()) return chord
 
-        // Separate root note from the rest of the chord
-        var rootNote: String
-        var chordSuffix: String
+        // Preserve optional surrounding hyphens
+        val hasLeadingHyphen = chord.startsWith("-")
+        val hasTrailingHyphen = chord.endsWith("-") && chord.length > (if (hasLeadingHyphen) 1 else 0)
+        
+        val pureChord = chord.removeSurrounding("-")
+        if (pureChord.isEmpty()) return chord
 
-        when {
-            chord.length >= 2 && chord[1] == '#' -> {
-                rootNote = chord.substring(0, 2)
-                chordSuffix = chord.substring(2)
-            }
-            chord.length >= 2 && chord[1] == 'b' -> {
-                rootNote = chord.substring(0, 2)
-                chordSuffix = chord.substring(2)
-            }
-            else -> {
-                rootNote = chord.substring(0, 1)
-                chordSuffix = chord.substring(1)
-            }
+        // Separate root note from the rest of the chord
+        val (rootNote, chordSuffix) = if (pureChord.length >= 2 && (pureChord[1] == '#' || pureChord[1] == 'b')) {
+            pureChord.substring(0, 2) to pureChord.substring(2)
+        } else {
+            pureChord.substring(0, 1) to pureChord.substring(1)
         }
 
-        // Normalize enharmonic equivalents
-        rootNote = enharmonicMap[rootNote] ?: rootNote
+        // Normalize enharmonic equivalents (e.g., Db -> C#)
+        val normalizedRoot = enharmonicMap[rootNote] ?: rootNote
 
         // Find index and transpose
-        val currentIndex = noteOrder.indexOf(rootNote)
+        val currentIndex = noteOrder.indexOf(normalizedRoot)
         if (currentIndex == -1) return chord
 
         var newIndex = (currentIndex + semitones) % noteOrder.size
@@ -111,7 +100,9 @@ object ChordTransposer {
 
         val newRootNote = noteOrder[newIndex]
 
-        return newRootNote + chordSuffix
+        return (if (hasLeadingHyphen) "-" else "") + 
+               newRootNote + chordSuffix + 
+               (if (hasTrailingHyphen) "-" else "")
     }
 
     // Convenience methods
@@ -119,74 +110,4 @@ object ChordTransposer {
     fun transposeDownOneSemitone(songText: String) = transpose(songText, -1)
     fun transposeUpOneTone(songText: String) = transpose(songText, 2)
     fun transposeDownOneTone(songText: String) = transpose(songText, -2)
-}
-
-// Alternative class with named parameters
-class SongTransposer {
-
-    enum class TransposeAmount {
-        HALF_UP,    // +1/2 tone
-        HALF_DOWN,  // -1/2 tone
-        FULL_UP,    // +1 tone
-        FULL_DOWN   // -1 tone
-    }
-
-    fun transpose(song: String, amount: TransposeAmount): String {
-        val semitones = when (amount) {
-            TransposeAmount.HALF_UP -> 1
-            TransposeAmount.HALF_DOWN -> -1
-            TransposeAmount.FULL_UP -> 2
-            TransposeAmount.FULL_DOWN -> -2
-        }
-        return ChordTransposer.transpose(song, semitones)
-    }
-}
-
-// Usage example
-fun main() {
-    val originalSong = """
-        Verse 1:
-        C          G          Am         F
-        Hello, is it me you're looking for?
-        
-        Chorus:
-        C          G          Am         F
-        I can see it in your eyes, I can see it in your smile
-        
-        Bridge:
-        Dm7        G7         Cmaj7      A7
-        You're all I've ever wanted
-    """.trimIndent()
-
-    println("Original Song:")
-    println(originalSong)
-    println("\n" + "=".repeat(50))
-
-    // Transpose up 1 semitone (+1/2 tone)
-    val halfUp = ChordTransposer.transposeUpOneSemitone(originalSong)
-    println("\nTransposed +1/2 tone:")
-    println(halfUp)
-
-    // Transpose down 1 semitone (-1/2 tone)
-    val halfDown = ChordTransposer.transposeDownOneSemitone(originalSong)
-    println("\nTransposed -1/2 tone:")
-    println(halfDown)
-
-    // Transpose up 1 tone (+1 tone)
-    val fullUp = ChordTransposer.transposeUpOneTone(originalSong)
-    println("\nTransposed +1 tone:")
-    println(fullUp)
-
-    // Using the alternative class
-    val transposer = SongTransposer()
-    val halfUpAlt = transposer.transpose(originalSong, SongTransposer.TransposeAmount.HALF_UP)
-    println("\nUsing alternative class (+1/2 tone):")
-    println(halfUpAlt)
-
-    // Test various chord types
-    val chordTest = "Am   A7   Amaj7   Asus4   A#m   C#dim   Bbm"
-    println("\n\nChord Test:")
-    println("Original: $chordTest")
-    println("+1 tone: ${ChordTransposer.transposeUpOneTone(chordTest)}")
-    println("-1/2 tone: ${ChordTransposer.transposeDownOneSemitone(chordTest)}")
 }
