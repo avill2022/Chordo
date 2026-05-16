@@ -1,51 +1,27 @@
 package avill.ladv.chordo.apps.app.uiscreens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.scrollBy
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import avill.ladv.chordo.apps.app.helpers.ChordTransposer
+import avill.ladv.chordo.apps.app.helpers.extractTabsFlexible
+import avill.ladv.chordo.apps.app.helpers.replaceTabsFlexible
 import avill.ladv.chordo.apps.app.model.Song
 import avill.ladv.chordo.data.local.db.room.entities.Playlist
 import kotlinx.coroutines.delay
@@ -73,6 +49,13 @@ fun LyricsScreen(
     var isAutoScrolling by remember { mutableStateOf(false) }
     var scrollSpeed by remember { mutableIntStateOf(5) } // Default level 5
 
+    // Extract all tabs from song content and the explicit tab field
+    val allTabs = remember(song.content, song.tab) {
+        val fromTab = if (song.tab.isNotBlank()) extractTabsFlexible(song.tab) else emptyList()
+        val fromContent = extractTabsFlexible(song.content)
+        (fromTab + fromContent).distinctBy { it.content }
+    }
+
     LaunchedEffect(isAutoScrolling, scrollSpeed) {
         if (isAutoScrolling) {
             while (true) {
@@ -98,7 +81,7 @@ fun LyricsScreen(
                     }
                     IconButton(onClick = { isAutoScrolling = !isAutoScrolling }) {
                         Icon(
-                            imageVector = if (isAutoScrolling) Icons.Default.PlayArrow else Icons.Default.PlayArrow, // Need a Pause icon
+                            imageVector = if (isAutoScrolling) Icons.Default.PlayArrow else Icons.Default.PlayArrow,
                             contentDescription = "Auto Scroll",
                             tint = if (isAutoScrolling) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                         )
@@ -140,7 +123,7 @@ fun LyricsScreen(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     OutlinedButton(onClick = { isChordsRemoved = !isChordsRemoved }) {
-                        Text(if (isChordsRemoved) "Show Chords" else "Remove Chords")
+                        Text(if (isChordsRemoved) "S" else "R")
                     }
                 }
                 
@@ -169,16 +152,19 @@ fun LyricsScreen(
 
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .weight(1f)
                     .padding(16.dp)
             ) {
                 val chordColor = MaterialTheme.colorScheme.primary
                 val annotatedContent = remember(song.content, isChordsRemoved, chordColor) {
+                    // Replace tabs with placeholders for better readability in the lyrics view
+                    val textToProcess = replaceTabsFlexible(song.content)
+                    
                     if (isChordsRemoved) {
-                        buildAnnotatedString { append(ChordTransposer.removeChords(song.content)) }
+                        buildAnnotatedString { append(ChordTransposer.removeChords(textToProcess)) }
                     } else {
                         buildAnnotatedString {
-                            val text = song.content
+                            val text = textToProcess
                             var lastIndex = 0
                             ChordTransposer.chordRegex.findAll(text).forEach { match ->
                                 append(text.substring(lastIndex, match.range.first))
@@ -196,6 +182,41 @@ fun LyricsScreen(
                     text = annotatedContent,
                     modifier = Modifier.verticalScroll(scrollState)
                 )
+            }
+
+            if (song.tab.isNotEmpty()) {
+                HorizontalDivider()
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp)
+                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
+                        .padding(8.dp)
+                ) {
+                    Text(
+                        text = "TABLATURE",
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .horizontalScroll(rememberScrollState())
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        Text(
+                            text = song.tab,
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontFamily = FontFamily.Monospace,
+                                lineHeight = 14.sp
+                            ),
+                            softWrap = false,
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        )
+                    }
+                }
             }
         }
     }
@@ -217,7 +238,7 @@ fun LyricsScreen(
                             Text(playlist.name)
                         }
                     }
-                    Divider()
+                    HorizontalDivider()
                     TextButton(
                         onClick = {
                             showCreatePlaylistDialog = true

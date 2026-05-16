@@ -189,6 +189,7 @@ dependencies {
     //camera
     implementation("androidx.camera:camera-camera2:1.5.2")
     implementation("androidx.camera:camera-view:1.5.2")
+    implementation("androidx.compose.material:material-icons-extended")
 }
 kapt {
     correctErrorTypes = true

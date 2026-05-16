@@ -5,14 +5,19 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import avill.ladv.chordo.data.Repository
-import avill.ladv.chordo.data.network.RemoteDataSource
 import avill.ladv.chordo.apps.app.helpers.ChordTransposer
+import avill.ladv.chordo.apps.app.helpers.Tab
+import avill.ladv.chordo.apps.app.helpers.extractTabs
+import avill.ladv.chordo.apps.app.helpers.extractTabsFlexible
+import avill.ladv.chordo.apps.app.helpers.replaceTabsFlexible
+import avill.ladv.chordo.apps.app.helpers.replaceTabsWithPlaceholders
 import avill.ladv.chordo.apps.app.model.Chords
 import avill.ladv.chordo.apps.app.model.Song
+import avill.ladv.chordo.data.Repository
 import avill.ladv.chordo.data.local.db.room.entities.FavoriteSong
 import avill.ladv.chordo.data.local.db.room.entities.Playlist
 import avill.ladv.chordo.data.local.db.room.entities.PlaylistSong
+import avill.ladv.chordo.data.network.RemoteDataSource
 import avill.ladv.chordo.data.network.retrofit.APIClients.chordoApiService
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,24 +48,68 @@ class ChordoViewModel
                 _uiState.update { it.copy(playlists = playlists) }
             }
         }
+        viewModelScope.launch {
+            repository.getAllFavorites().collect { favorites ->
+                val favoriteSongs = favorites.map { it.toSong() }
+                _uiState.update { it.copy(favoriteSongs = favoriteSongs) }
+                updateFilteredSongs()
+            }
+        }
+    }
+
+    fun addtabs(tabx:List<Tab>,count:Int = 0):String{
+        var result = ""
+        var index = count
+        for (tab in tabx) { result += "\n[tab-${index}]\n${tab.content}"
+            index++}
+        return result
     }
 
     suspend fun getTabsFromServer(){
         try {
             val chords = repository.remoteDataSource.apiChords.getAll()
             _chords.value = chords
+            chords.songs.forEach {
+                val uniqueChords = ChordTransposer.getUniqueChords(it.content)
+                it.chords = uniqueChords.joinToString(" ")
+                if (it.tone.isBlank()) {
+                    it.tone = uniqueChords.firstOrNull() ?: ""
+                }
+                var tabListTotal: List<Tab> = emptyList()
+                var tabString = ""
+
+                var tabList = extractTabs(it.content,0,1)
+                tabString = addtabs(tabList,1)
+                it.content = replaceTabsWithPlaceholders(it.content,0)
+                tabListTotal += tabList
+
+                tabList = extractTabs(it.content,1,tabListTotal.size)
+                if(tabList.isNotEmpty())
+                    tabString = tabString + "\n" + addtabs(tabList,tabListTotal.size)
+                it.content = replaceTabsWithPlaceholders(it.content,1)
+                tabListTotal += tabList
+
+                tabList = extractTabs(it.content,2,tabListTotal.size)
+                if(tabList.isNotEmpty())
+                    tabString = tabString + "\n" + addtabs(tabList,tabListTotal.size)
+                it.content = replaceTabsWithPlaceholders(it.content,2)
+
+                tabList = extractTabsFlexible(it.content)
+                if(tabList.isNotEmpty())
+                    tabString = tabString + "\n" + addtabs(tabList,tabListTotal.size)
+                it.content = replaceTabsFlexible(it.content)
+
+                it.tab = tabString
+            }
+
             updateFilteredSongs()
-            // Save the response to an internal file
             val json = Gson().toJson(chords)
             repository.getMyFilesManager().save("chords_cache.json", json)
-
-            Log.v(RemoteDataSource::class.simpleName, "isSuccessful ")
         } catch (e: Exception) {
-            Log.e(RemoteDataSource::class.simpleName, "Error ${e}")
-            // If there is no internet or another error, recover data from the file
             getTabsFromLocal()
         }
     }
+
     fun getTabsFromLocal(){
         try {
             val json = repository.getMyFilesManager().getInformation("chords_cache.json")
@@ -68,28 +117,33 @@ class ChordoViewModel
                 val chordsFromFile = Gson().fromJson(json, Chords::class.java)
                 _chords.value = chordsFromFile
                 updateFilteredSongs()
-                Log.v(RemoteDataSource::class.simpleName, "Recovered from file successfully")
             }
         } catch (fileEx: Exception) {
-            Log.e(RemoteDataSource::class.simpleName, "Error recovering from file: ${fileEx.message}")
+            Log.e("ChordoViewModel", "Error recovering from file: ${fileEx.message}")
         }
     }
+
     fun getTabs() {
         viewModelScope.launch(Dispatchers.IO) {
             getTabsFromServer()
         }
     }
 
-
-
     fun onSearchTextChange(text: String) {
         _uiState.update { it.copy(searchText = text) }
         updateFilteredSongs()
     }
 
+    fun onTabSelected(index: Int) {
+        _uiState.update { it.copy(selectedTab = index) }
+        updateFilteredSongs()
+    }
+
     private fun updateFilteredSongs() {
         val query = _uiState.value.searchText
-        val allSongs = _chords.value.songs
+        val selectedTab = _uiState.value.selectedTab
+        val allSongs = if (selectedTab == 0) _chords.value.songs else _uiState.value.favoriteSongs
+        
         val filtered = if (query.isEmpty()) {
             allSongs
         } else {
@@ -107,7 +161,6 @@ class ChordoViewModel
     }
 
     fun saveSong(song: Song) {
-        // ... (existing code)
         val currentSongs = _chords.value.songs.toMutableList()
         val index = currentSongs.indexOfFirst { it.name == song.name && it.folder == song.folder }
         if (index != -1) {
@@ -118,7 +171,6 @@ class ChordoViewModel
         _chords.value = _chords.value.copy(songs = currentSongs)
         val json = Gson().toJson(_chords.value)
         repository.getMyFilesManager().save("chords_cache.json", json)
-
         updateFilteredSongs()
     }
 
@@ -128,27 +180,7 @@ class ChordoViewModel
             if (isFav) {
                 repository.removeFavorite(song.name, song.folder)
             } else {
-                repository.addFavorite(
-                    FavoriteSong(
-                        name = song.name,
-                        folder = song.folder,
-                        content = song.content,
-                        tone = song.tone,
-                        rhythm = song.rhythm,
-                        tempo = song.tempo,
-                        harmony = song.harmony,
-                        melody = song.melody,
-                        chords = song.chords,
-                        tab = song.tab,
-                        structure = song.structure,
-                        author = song.author,
-                        urlsong = song.urlsong,
-                        urltutorial = song.urltutorial,
-                        urlmidi = song.urlmidi,
-                        urlgpt = song.urlgpt,
-                        urlpartiture = song.urlpartiture
-                    )
-                )
+                repository.addFavorite(song.toFavoriteSong())
             }
             checkIfFavorite(song)
         }
@@ -161,143 +193,76 @@ class ChordoViewModel
         }
     }
 
-    // Playlist Methods
     fun createPlaylist(name: String) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.createPlaylist(name)
         }
     }
 
-    fun deletePlaylist(playlist: Playlist) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.deletePlaylist(playlist)
-        }
-    }
-
     fun addSongToPlaylist(song: Song, playlistId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.addSongToPlaylist(
-                PlaylistSong(
-                    playlistId = playlistId,
-                    name = song.name,
-                    folder = song.folder,
-                    content = song.content,
-                    tone = song.tone,
-                    rhythm = song.rhythm,
-                    tempo = song.tempo,
-                    harmony = song.harmony,
-                    melody = song.melody,
-                    chords = song.chords,
-                    tab = song.tab,
-                    structure = song.structure,
-                    author = song.author,
-                    urlsong = song.urlsong,
-                    urltutorial = song.urltutorial,
-                    urlmidi = song.urlmidi,
-                    urlgpt = song.urlgpt,
-                    urlpartiture = song.urlpartiture
-                )
-            )
+            repository.addSongToPlaylist(song.toPlaylistSong(playlistId))
         }
     }
 
-    fun removeSongFromPlaylist(song: Song, playlistId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.removeSongFromPlaylist(playlistId, song.name, song.folder)
-        }
-    }
-
-    // Transposition Methods
     fun transposeSong(song: Song, semitones: Int) {
         val newContent = ChordTransposer.transpose(song.content, semitones)
         saveSong(song.copy(content = newContent))
     }
 
     fun restoreSong(song: Song) {
-        if (song.tone.isEmpty()) return
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                // To restore the original, we re-fetch from the server 
-                // as the local cache might already be modified and saved.
                 val chords = repository.remoteDataSource.apiChords.getAll()
-                val original = chords.songs.find { 
-                    it.name == song.name && it.folder == song.folder 
-                }
-                original?.let {
-                    saveSong(it)
-                }
+                val original = chords.songs.find { it.name == song.name && it.folder == song.folder }
+                original?.let { saveSong(it) }
             } catch (e: Exception) {
                 Log.e("ChordoViewModel", "Error restoring song: ${e.message}")
             }
-        }
-    }
-    //api
-    suspend fun getChords(): Result<String> {
-        return try {
-            val response = chordoApiService.getChords()
-            if (response.isSuccessful) {
-                val jsonString = response.body()
-                if (jsonString != null) {
-                    Result.success(jsonString)
-                } else {
-                    Result.failure(Exception("Empty response body"))
-                }
-            } else {
-                Result.failure(Exception("HTTP ${response.code()}: ${response.message()}"))
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-    /**
-     * Save repositories to remote server
-     */
-    suspend fun saveChords(jsonString: String): Result<String> {
-        return try {
-            val response = chordoApiService.saveChords(jsonString)
-            if (response.isSuccessful) {
-                val responseBody = response.body()
-                if (responseBody != null) {
-                    Result.success(responseBody)
-                } else {
-                    Result.success("Saved successfully")
-                }
-            } else {
-                Result.failure(Exception("HTTP ${response.code()}: ${response.message()}"))
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
         }
     }
 
     fun uploadChords() {
         viewModelScope.launch(Dispatchers.IO) {
             val json = Gson().toJson(_chords.value)
-            val result = saveChords(json)
-            if (result.isSuccess) {
-                Log.v("ChordoViewModel", "Upload successful: ${result.getOrNull()}")
-            } else {
-                Log.e("ChordoViewModel", "Upload failed: ${result.exceptionOrNull()?.message}")
-            }
+            chordoApiService.saveChords(json)
         }
     }
 
     fun downloadChords() {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = getChords()
-            result.onSuccess { jsonString ->
-                try {
-                    val chordsFromFile = Gson().fromJson(jsonString, Chords::class.java)
-                    _chords.value = chordsFromFile
-                    updateFilteredSongs()
-                    repository.getMyFilesManager().save("chords_cache.json", jsonString)
-                    Log.v("ChordoViewModel", "Download and update successful")
-                } catch (e: Exception) {
-                    Log.e("ChordoViewModel", "Error parsing downloaded chords: ${e.message}")
-                }
-            }.onFailure {
-                Log.e("ChordoViewModel", "Download failed: ${it.message}")
+            val response = chordoApiService.getChords()
+            if (response.isSuccessful) {
+                val jsonString = response.body() ?: return@launch
+                val chordsFromFile = Gson().fromJson(jsonString, Chords::class.java)
+                _chords.value = chordsFromFile
+                updateFilteredSongs()
+                repository.getMyFilesManager().save("chords_cache.json", jsonString)
             }
         }
     }
 }
+
+fun Song.toFavoriteSong() = FavoriteSong(
+    name = name, folder = folder, content = content, tone = tone,
+    rhythm = rhythm, tempo = tempo, harmony = harmony, melody = melody,
+    chords = chords, tab = tab, structure = structure, author = author,
+    urlsong = urlsong, urltutorial = urltutorial, urlmidi = urlmidi,
+    urlgpt = urlgpt, urlpartiture = urlpartiture
+)
+
+fun FavoriteSong.toSong() = Song(
+    name = name, folder = folder, content = content, tone = tone,
+    rhythm = rhythm, tempo = tempo, harmony = harmony, melody = melody,
+    chords = chords, tab = tab, structure = structure, author = author,
+    urlsong = urlsong, urltutorial = urltutorial, urlmidi = urlmidi,
+    urlgpt = urlgpt, urlpartiture = urlpartiture
+)
+
+fun Song.toPlaylistSong(playlistId: Long) = PlaylistSong(
+    playlistId = playlistId, name = name, folder = folder, content = content,
+    tone = tone, rhythm = rhythm, tempo = tempo, harmony = harmony,
+    melody = melody, chords = chords, tab = tab, structure = structure,
+    author = author, urlsong = urlsong, urltutorial = urltutorial,
+    urlmidi = urlmidi, urlgpt = urlgpt, urlpartiture = urlpartiture
+)

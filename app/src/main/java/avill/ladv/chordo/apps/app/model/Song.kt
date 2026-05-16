@@ -2,12 +2,12 @@ package avill.ladv.chordo.apps.app.model
 
 data class Song(
     val name: String,
-    val tone: String,
-    val chords: String,
+    var tone: String,
+    var chords: String,
     val rhythm: String,
     val tempo: String,
-    val content: String,
-    val tab: String,
+    var content: String,
+    var tab: String,
 
     val structure: String,
 

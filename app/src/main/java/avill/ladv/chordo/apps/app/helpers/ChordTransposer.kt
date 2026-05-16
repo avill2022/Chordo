@@ -1,15 +1,12 @@
 package avill.ladv.chordo.apps.app.helpers
 
 object ChordTransposer {
-
     // Map of notes and their semitone positions
     private val noteOrder = listOf("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
-
     // Map for enharmonic equivalents
     private val enharmonicMap = mapOf(
         "Db" to "C#", "Eb" to "D#", "Gb" to "F#", "Ab" to "G#", "Bb" to "A#"
     )
-
     // Regex for chord detection:
     // (?<=\s|^|-) : Positive lookbehind for space, start of line, or hyphen.
     // -? : Optional leading hyphen.
@@ -17,7 +14,6 @@ object ChordTransposer {
     // -? : Optional trailing hyphen.
     // (?=\s|$|-) : Positive lookahead for space, end of line, or hyphen.
     val chordRegex = """(?<=\s|^|-)-?([A-G][#b]?(?:m|maj|min|dim|aug|sus|add|M|6|7|9|11|13|maj7|m7|sus[24]|add[249])*\d*)-?(?=\s|$|-)""".toRegex()
-
     /**
      * Main transpose function
      * @param songText The song with chords
@@ -104,10 +100,4 @@ object ChordTransposer {
                newRootNote + chordSuffix + 
                (if (hasTrailingHyphen) "-" else "")
     }
-
-    // Convenience methods
-    fun transposeUpOneSemitone(songText: String) = transpose(songText, 1)
-    fun transposeDownOneSemitone(songText: String) = transpose(songText, -1)
-    fun transposeUpOneTone(songText: String) = transpose(songText, 2)
-    fun transposeDownOneTone(songText: String) = transpose(songText, -2)
 }

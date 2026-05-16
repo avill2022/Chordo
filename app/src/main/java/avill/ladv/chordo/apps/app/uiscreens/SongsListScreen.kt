@@ -5,9 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,56 +13,88 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import avill.ladv.chordo.apps.app.model.Song
+import avill.ladv.chordo.data.local.db.room.entities.Playlist
 
 @Composable
 fun SongsListScreen(
     songs: List<Song>,
+    playlists: List<Playlist>,
     searchText: String,
     onSearchTextChange: (String) -> Unit,
     onSongClick: (Song) -> Unit,
+    onPlaylistClick: (Playlist) -> Unit,
     onCreateClick: () -> Unit,
     onSyncClick: () -> Unit,
     onUploadClick: () -> Unit,
-    onDownloadClick: () -> Unit
+    onDownloadClick: () -> Unit,
+    selectedTab: Int,
+    onTabSelected: (Int) -> Unit
 ) {
     Scaffold(
         topBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp, start = 16.dp, end = 8.dp, bottom = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                OutlinedTextField(
-                    value = searchText,
-                    onValueChange = onSearchTextChange,
-                    modifier = Modifier.weight(1f),
-                    placeholder = { Text("Search songs or artists...") },
-                    singleLine = true
-                )
-                IconButton(onClick = onSyncClick) {
-                    Icon(Icons.Default.Refresh, contentDescription = "Sync with server")
+            Column {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp, start = 16.dp, end = 8.dp, bottom = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedTextField(
+                        value = searchText,
+                        onValueChange = onSearchTextChange,
+                        modifier = Modifier.weight(1f),
+                        placeholder = { 
+                            Text(if (selectedTab == 2) "Search playlists..." else "Search songs or artists...") 
+                        },
+                        singleLine = true,
+                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) }
+                    )
+                    IconButton(onClick = onSyncClick) {
+                        Icon(Icons.Default.Refresh, contentDescription = "Sync with server")
+                    }
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = onUploadClick) {
+                        Text("Upload", style = MaterialTheme.typography.labelLarge)
+                    }
+                    TextButton(onClick = onDownloadClick) {
+                        Text("Download", style = MaterialTheme.typography.labelLarge)
+                    }
                 }
             }
         },
         bottomBar = {
-            BottomAppBar {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    TextButton(onClick = onUploadClick) {
-                        Text("Upload")
-                    }
-                    TextButton(onClick = onDownloadClick) {
-                        Text("Download")
-                    }
-                }
+            NavigationBar {
+                NavigationBarItem(
+                    selected = selectedTab == 0,
+                    onClick = { onTabSelected(0) },
+                    icon = { Icon(Icons.Default.List, contentDescription = "All Songs") },
+                    label = { Text("All") }
+                )
+                NavigationBarItem(
+                    selected = selectedTab == 1,
+                    onClick = { onTabSelected(1) },
+                    icon = { Icon(Icons.Default.Favorite, contentDescription = "Favorites") },
+                    label = { Text("Favorites") }
+                )
+                NavigationBarItem(
+                    selected = selectedTab == 2,
+                    onClick = { onTabSelected(2) },
+                    icon = { Icon(Icons.Default.LibraryMusic, contentDescription = "Playlists") },
+                    label = { Text("Playlists") }
+                )
             }
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = onCreateClick) {
-                Icon(Icons.Default.Add, contentDescription = "Add Song")
+            if (selectedTab != 2) {
+                FloatingActionButton(onClick = onCreateClick) {
+                    Icon(Icons.Default.Add, contentDescription = "Add Song")
+                }
             }
         }
     ) { paddingValues ->
@@ -73,11 +103,44 @@ fun SongsListScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            itemsIndexed(songs) { _, song ->
-                SongItem(
-                    song = song,
-                    onClick = { onSongClick(song) }
-                )
+            if (selectedTab == 2) {
+                val filteredPlaylists = playlists.filter { it.name.contains(searchText, ignoreCase = true) }
+                if (filteredPlaylists.isEmpty()) {
+                    item {
+                        Box(
+                            modifier = Modifier.fillParentMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("No playlists found", color = MaterialTheme.colorScheme.outline)
+                        }
+                    }
+                }
+                itemsIndexed(filteredPlaylists) { _, playlist ->
+                    PlaylistItem(
+                        playlist = playlist,
+                        onClick = { onPlaylistClick(playlist) }
+                    )
+                }
+            } else {
+                if (songs.isEmpty()) {
+                    item {
+                        Box(
+                            modifier = Modifier.fillParentMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = if (selectedTab == 1) "No favorites yet" else "No songs found",
+                                color = MaterialTheme.colorScheme.outline
+                            )
+                        }
+                    }
+                }
+                itemsIndexed(songs) { _, song ->
+                    SongItem(
+                        song = song,
+                        onClick = { onSongClick(song) }
+                    )
+                }
             }
         }
     }
@@ -99,5 +162,54 @@ fun SongItem(
             Text(text = song.name, fontSize = 18.sp)
             Text(text = song.folder, fontSize = 14.sp)
         }
+
+        if (song.tone.isNotEmpty()) {
+            Text(
+                text = song.tone,
+                modifier = Modifier.padding(horizontal = 8.dp),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.secondary
+            )
+        }
+
+        if (song.tab.isNotEmpty()) {
+            Surface(
+                color = MaterialTheme.colorScheme.primaryContainer,
+                shape = MaterialTheme.shapes.extraSmall
+            ) {
+                Text(
+                    text = "TAB",
+                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp),
+                    style = MaterialTheme.typography.labelSmall
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun PlaylistItem(
+    playlist: Playlist,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .clickable { onClick() }
+            .padding(16.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = Icons.Default.Folder,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(end = 16.dp)
+        )
+        Text(text = playlist.name, fontSize = 18.sp, modifier = Modifier.weight(1f))
+        Icon(
+            imageVector = Icons.Default.ChevronRight,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.outline
+        )
     }
 }

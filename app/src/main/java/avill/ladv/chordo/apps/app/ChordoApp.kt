@@ -41,7 +41,7 @@ fun NamePreview() {
 fun ChordoApp(viewModel: ChordoViewModel) {
     val context = LocalContext.current
     val navController = rememberNavController()
-    viewModel.getTabs()
+    //viewModel.getTabs()
     val uiState by viewModel.uiState.collectAsState()
 
     NavHost(
@@ -65,9 +65,14 @@ fun ChordoApp(viewModel: ChordoViewModel) {
                 searchText = uiState.searchText,
                 onSearchTextChange = { viewModel.onSearchTextChange(it) },
                 onSongClick = { song ->
+                    // Find index in the original list for navigation if needed, 
+                    // or pass an ID/Name for lookup in LyricsScreen
                     val index = viewModel.chords.value.songs.indexOf(song)
                     if (index != -1) {
                         navController.navigate("lyrics/$index")
+                    } else {
+                        // If it's a favorite not in the main list (offline maybe?)
+                        // Handle navigation by song name or similar if index doesn't work
                     }
                 },
                 onCreateClick = {
@@ -75,7 +80,11 @@ fun ChordoApp(viewModel: ChordoViewModel) {
                 },
                 onSyncClick = { viewModel.getTabs() },
                 onUploadClick = { viewModel.uploadChords() },
-                onDownloadClick = { viewModel.downloadChords() }
+                onDownloadClick = { viewModel.downloadChords() },
+                selectedTab = uiState.selectedTab,
+                onTabSelected = { viewModel.onTabSelected(it) },
+                playlists = uiState.playlists,
+                onPlaylistClick = {}
             )
         }
 

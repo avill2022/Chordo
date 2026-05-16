@@ -6,9 +6,7 @@ import avill.ladv.chordo.MyApplication
 import avill.ladv.chordo.data.Repository
 import avill.ladv.chordo.data.local.LocalDataSource
 import avill.ladv.chordo.data.local.db.room.AppDatabase
-import avill.ladv.chordo.service.MediaControllerManager
 import avill.ladv.chordo.util.LocationHelper
-
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -69,14 +67,5 @@ object MainModule {
     @Provides
     fun provideIntentHelper(@ApplicationContext context: Context): avill.ladv.chordo.util.IntentHelper {
         return avill.ladv.chordo.util.IntentHelper(context)
-    }
-
-    //player module
-    @Singleton
-    @Provides
-    fun provideMediaControllerManager(application: Application): MediaControllerManager {
-        return MediaControllerManager(application.baseContext)
-
-
     }
 }
