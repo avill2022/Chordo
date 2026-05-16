@@ -1,6 +1,7 @@
 package avill.ladv.chordo.view.activities
 
 // AudioHelper.kt
+import android.Manifest
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.SoundPool
@@ -10,6 +11,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -33,6 +35,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import avill.ladv.chordo.apps.app.ChordoApp
 import avill.ladv.chordo.apps.app.ChordoViewModel
 import avill.ladv.chordo.apps.app.TempoViewModel
+import avill.ladv.chordo.apps.app.TunerApp
 import avill.ladv.chordo.ui.theme.AppNameTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -45,7 +48,11 @@ class MainActivity : ComponentActivity() {
     val chordoViewModel: ChordoViewModel by viewModels()
     val tempVIewMOdel:TempoViewModel by viewModels()
     lateinit var audioHelper: AudioHelper
-
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        // Handle permission result
+    }
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("ViewModelConstructorInComposable")
     @OptIn(
@@ -61,9 +68,13 @@ class MainActivity : ComponentActivity() {
             //splashScreen.setKeepOnScreenCondition{false}
             audioHelper = AudioHelper(this@MainActivity)
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+        }
         setContent {
             AppNameTheme {
-                TempoApp(tempVIewMOdel)
+                TunerApp()
+                //TempoApp(tempVIewMOdel)
             //ChordoApp(chordoViewModel)
             }
         }
