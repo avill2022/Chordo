@@ -1,15 +1,25 @@
 package avill.ladv.chordo.apps.app.uiscreens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import avill.ladv.chordo.apps.app.helpers.ChordTransposer
@@ -40,40 +50,27 @@ fun SongEditScreen(
     var urlgpt by remember { mutableStateOf(song?.urlgpt ?: "") }
     var urlpartiture by remember { mutableStateOf(song?.urlpartiture ?: "") }
 
+    var expandedAdvanced by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (song == null) "Create Song" else "Edit Song") },
+                title = { Text(if (song == null) "New Song" else "Edit Song") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {
-                    IconButton(onClick = {
-                        onSave(
-                            Song(
-                                name = name,
-                                folder = folder,
-                                content = content,
-                                tone = tone,
-                                rhythm = rhythm,
-                                tempo = tempo,
-                                harmony = harmony,
-                                melody = melody,
-                                chords = chords,
-                                tab = tab,
-                                structure = structure,
-                                author = author,
-                                urlsong = urlsong,
-                                urltutorial = urltutorial,
-                                urlmidi = urlmidi,
-                                urlgpt = urlgpt,
-                                urlpartiture = urlpartiture
-                            )
-                        )
-                    }) {
-                        Icon(Icons.Default.Check, contentDescription = "Save")
+                    Button(
+                        onClick = {
+                            onSave(Song(name, tone, chords, rhythm, tempo, content, tab, structure, harmony, melody, author, folder, urlsong, urltutorial, urlmidi, urlgpt, urlpartiture))
+                        },
+                        modifier = Modifier.padding(end = 8.dp)
+                    ) {
+                        Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(18.dp))
+                        Spacer(Modifier.width(8.dp))
+                        Text("Save")
                     }
                 }
             )
@@ -82,65 +79,120 @@ fun SongEditScreen(
         Column(
             modifier = Modifier
                 .padding(paddingValues)
-                .padding(16.dp)
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Name") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = tone, onValueChange = { tone = it }, label = { Text("Tone") }, modifier = Modifier.fillMaxWidth())
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+            // Section 1: Identity
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("Basic Info", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+                    OutlinedTextField(
+                        value = name,
+                        onValueChange = { name = it },
+                        label = { Text("Song Title") },
+                        modifier = Modifier.fillMaxWidth(),
+                        textStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        OutlinedTextField(value = folder, onValueChange = { folder = it }, label = { Text("Artist / Folder") }, modifier = Modifier.weight(1f))
+                        OutlinedTextField(value = author, onValueChange = { author = it }, label = { Text("Composer") }, modifier = Modifier.weight(1f))
+                    }
+                }
+            }
+
+            // Section 2: Musical Properties (Horizontal Row for efficiency)
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(value = tone, onValueChange = { tone = it }, label = { Text("Tone") }, modifier = Modifier.weight(1f))
+                OutlinedTextField(value = tempo, onValueChange = { tempo = it }, label = { Text("BPM/Tempo") }, modifier = Modifier.weight(1f))
+                OutlinedTextField(value = rhythm, onValueChange = { rhythm = it }, label = { Text("Rhythm") }, modifier = Modifier.weight(1f))
+            }
+
+            // Section 3: Content (Lyrics & Chords) - HIGH PRIORITY
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+                    Text("Lyrics & Chords", style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+                    TextButton(onClick = {
+                        val unique = ChordTransposer.getUniqueChords(content)
+                        chords = unique.joinToString(" ")
+                        if (tone.isBlank()) tone = unique.firstOrNull() ?: ""
+                    }) {
+                        Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(16.dp))
+                        Spacer(Modifier.width(4.dp))
+                        Text("Extract Chords")
+                    }
+                }
+
                 OutlinedTextField(
                     value = chords,
                     onValueChange = { chords = it },
-                    label = { Text("Chords") },
-                    modifier = Modifier.weight(1f)
+                    label = { Text("Chord Progression") },
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = { Text("G D Em C...") }
                 )
-                IconButton(
-                    onClick = {
-                        val uniqueChords = ChordTransposer.getUniqueChords(content)
-                        chords = uniqueChords.joinToString(" ")
-                        if (tone.isBlank()) {
-                            tone = uniqueChords.firstOrNull() ?: ""
-                        }
-                    }
+
+                OutlinedTextField(
+                    value = content,
+                    onValueChange = { content = it },
+                    label = { Text("Lyrics with [Chords]") },
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 200.dp),
+                    minLines = 8
+                )
+            }
+
+            // Section 4: Tablature
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("Tablature", style = MaterialTheme.typography.titleMedium)
+                OutlinedTextField(
+                    value = tab,
+                    onValueChange = { tab = it },
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 120.dp),
+                    textStyle = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
+                    placeholder = { Text("e|---...\nB|---...") }
+                )
+            }
+
+            // Section 5: Advanced (Collapsible)
+            Surface(
+                onClick = { expandedAdvanced = !expandedAdvanced },
+                shape = MaterialTheme.shapes.medium,
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = "Extract Chords from lyrics"
-                    )
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text("Advanced Details & Links", style = MaterialTheme.typography.titleSmall)
+                        Text("URLs, Structure, Harmony...", style = MaterialTheme.typography.bodySmall)
+                    }
+                    Icon(if (expandedAdvanced) Icons.Default.ExpandLess else Icons.Default.ExpandMore, contentDescription = null)
                 }
             }
-            OutlinedTextField(value = rhythm, onValueChange = { rhythm = it }, label = { Text("Rhythm") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = tempo, onValueChange = { tempo = it }, label = { Text("Tempo") }, modifier = Modifier.fillMaxWidth())
 
+            AnimatedVisibility(
+                visible = expandedAdvanced,
+                enter = expandVertically(),
+                exit = shrinkVertically()
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text("Metadata", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+                    OutlinedTextField(value = structure, onValueChange = { structure = it }, label = { Text("Structure (Intro, Verse... )") }, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(value = harmony, onValueChange = { harmony = it }, label = { Text("Harmony Details") }, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(value = melody, onValueChange = { melody = it }, label = { Text("Melody Notes") }, modifier = Modifier.fillMaxWidth())
 
-            OutlinedTextField(value = content, onValueChange = { content = it }, label = { Text("Content/Lyrics") }, modifier = Modifier.fillMaxWidth(), minLines = 5)
-            OutlinedTextField(value = tab, onValueChange = { tab = it }, label = { Text("Tab") }, modifier = Modifier.fillMaxWidth())
-            
-            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-            Text("Details", style = MaterialTheme.typography.titleMedium)
-            
-            OutlinedTextField(value = harmony, onValueChange = { harmony = it }, label = { Text("Harmony") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = melody, onValueChange = { melody = it }, label = { Text("Melody") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = structure, onValueChange = { structure = it }, label = { Text("Structure") }, modifier = Modifier.fillMaxWidth())
-            
-            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-            Text("URLs", style = MaterialTheme.typography.titleMedium)
+                    Spacer(Modifier.height(8.dp))
+                    Text("External Links", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+                    OutlinedTextField(value = urlsong, onValueChange = { urlsong = it }, label = { Text("Song Stream URL") }, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(value = urltutorial, onValueChange = { urltutorial = it }, label = { Text("Tutorial URL") }, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(value = urlmidi, onValueChange = { urlmidi = it }, label = { Text("MIDI File URL") }, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(value = urlgpt, onValueChange = { urlgpt = it }, label = { Text("AI / Analysis Link") }, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(value = urlpartiture, onValueChange = { urlpartiture = it }, label = { Text("Sheet Music / Partiture URL") }, modifier = Modifier.fillMaxWidth())
+                }
+            }
 
-            OutlinedTextField(value = folder, onValueChange = { folder = it }, label = { Text("Folder/Artist") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = author, onValueChange = { author = it }, label = { Text("Author") }, modifier = Modifier.fillMaxWidth())
-
-
-            OutlinedTextField(value = urlsong, onValueChange = { urlsong = it }, label = { Text("Song URL") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = urltutorial, onValueChange = { urltutorial = it }, label = { Text("Tutorial URL") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = urlmidi, onValueChange = { urlmidi = it }, label = { Text("MIDI URL") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = urlgpt, onValueChange = { urlgpt = it }, label = { Text("GPT URL") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = urlpartiture, onValueChange = { urlpartiture = it }, label = { Text("Partiture URL") }, modifier = Modifier.fillMaxWidth())
+            Spacer(Modifier.height(24.dp))
         }
     }
 }
@@ -148,26 +200,7 @@ fun SongEditScreen(
 @Preview(showBackground = true)
 @Composable
 fun SongEditScreenPreview() {
-    val sampleSong = Song(
-        name = "Wonderwall",
-        tone = "G",
-        chords = "Em7 G D A7sus4",
-        rhythm = "Down Down Up Up Down Up",
-        tempo = "95",
-        content = "[Em7] Today is [G] gonna be the day",
-        tab = "",
-        structure = "",
-        harmony = "",
-        melody = "",
-        author = "Oasis",
-        folder = "Rock",
-        urlsong = "",
-        urltutorial = "",
-        urlmidi = "",
-        urlgpt = "",
-        urlpartiture = ""
-    )
     MaterialTheme {
-        SongEditScreen(song = sampleSong, onSave = {}, onBack = {})
+        SongEditScreen(song = null, onSave = {}, onBack = {})
     }
 }

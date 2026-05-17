@@ -34,6 +34,16 @@ fun extractTabs(text: String,r:Int,count:Int = 0): List<Tab> {
                     "(?:e\\|.*?\\|)",              // E string (last one, no newline at end)
             RegexOption.DOT_MATCHES_ALL
         )
+    if(r == 3)
+        regex = Regex(
+            "(?:e\\|.*?\\|\\s*\\n)" +      // e string
+                    "(?:h\\|.*?\\|\\s*\\n)" +      // B string
+                    "(?:g\\|.*?\\|\\s*\\n)" +      // G string
+                    "(?:d\\|.*?\\|\\s*\\n)" +      // D string
+                    "(?:a\\|.*?\\|\\s*\\n)" +      // A string
+                    "(?:E\\|.*?\\|)",              // E string (last one, no newline at end)
+            RegexOption.DOT_MATCHES_ALL
+        )
 
     var tabCount = count
     return regex.findAll(text).map { matchResult ->

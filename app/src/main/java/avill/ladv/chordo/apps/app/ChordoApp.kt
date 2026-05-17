@@ -50,7 +50,7 @@ fun ChordoApp(
 ) {
     val context = LocalContext.current
     val navController = rememberNavController()
-    //viewModel.getTabs()
+    viewModel.getTabs()
     val uiState by viewModel.uiState.collectAsState()
 
     NavHost(
@@ -58,9 +58,6 @@ fun ChordoApp(
         navController = navController,
         startDestination = Chordo.List.route
     ) {
-        composable(Chordo.Splash.route) {
-            // Splash Screen
-        }
         composable(Chordo.OnBoarding.route) {
             // OnBoarding Screen
         }

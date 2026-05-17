@@ -94,6 +94,11 @@ class ChordoViewModel
                     tabString = tabString + "\n" + addtabs(tabList,tabListTotal.size)
                 it.content = replaceTabsWithPlaceholders(it.content,2)
 
+                tabList = extractTabs(it.content,3,tabListTotal.size)
+                if(tabList.isNotEmpty())
+                    tabString = tabString + "\n" + addtabs(tabList,tabListTotal.size)
+                it.content = replaceTabsWithPlaceholders(it.content,3)
+
                 tabList = extractTabsFlexible(it.content)
                 if(tabList.isNotEmpty())
                     tabString = tabString + "\n" + addtabs(tabList,tabListTotal.size)
@@ -125,7 +130,8 @@ class ChordoViewModel
 
     fun getTabs() {
         viewModelScope.launch(Dispatchers.IO) {
-            getTabsFromServer()
+            //getTabsFromServer()
+            getTabsFromLocal()
         }
     }
 

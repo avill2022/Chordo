@@ -1,5 +1,6 @@
 package avill.ladv.chordo.apps.app.uiscreens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -45,7 +46,7 @@ fun SongsListScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 16.dp, start = 16.dp, end = 8.dp, bottom = 4.dp),
+                            .padding(top = 30.dp, start = 16.dp, end = 8.dp, bottom = 4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         OutlinedTextField(
@@ -126,7 +127,7 @@ fun SongsListScreen(
                 4 -> TunerApp()
                 else -> {
                     LazyColumn(
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
                     ) {
                         if (selectedTab == 2) {
                             val filteredPlaylists = playlists.filter { it.name.contains(searchText, ignoreCase = true) }
@@ -242,6 +243,7 @@ fun PlaylistItem(
     }
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview(showBackground = true)
 @Composable
 fun SongsListScreenPreview() {
