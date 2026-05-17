@@ -13,7 +13,11 @@ object ChordTransposer {
     // ([A-G][#b]?(?:m|maj|min|dim|aug|sus|add|M|6|7|9|11|13|maj7|m7|sus[24]|add[249])*\d*) : Root and suffix (Group 1).
     // -? : Optional trailing hyphen.
     // (?=\s|$|-) : Positive lookahead for space, end of line, or hyphen.
-    val chordRegex = """(?<=\s|^|-)-?([A-G][#b]?(?:m|maj|min|dim|aug|sus|add|M|6|7|9|11|13|maj7|m7|sus[24]|add[249])*\d*)-?(?=\s|$|-)""".toRegex()
+    val chordRegex = """(?<=\s|^|-|\[)-?([A-G][#b]?(?:m|maj|min|dim|aug|sus|add|M|6|7|9|11|13|maj7|m7|sus[24]|add[249])*\d*)-?(?=\s|$|-|\])""".toRegex()
+    
+    // Latin chord regex (DO, RE, MI, FA, SOL, LA, SI)
+    val latinChordRegex = """(?<=\s|^|-|\[)-?((?:DO|RE|MI|FA|SOL|LA|SI)[#b]?(?:m|maj|min|dim|aug|sus|add|M|6|7|9|11|13|maj7|m7|sus[24]|add[249])*\d*)-?(?=\s|$|-|\])""".toRegex()
+
     /**
      * Main transpose function
      * @param songText The song with chords
@@ -30,12 +34,13 @@ object ChordTransposer {
     /**
      * Removes all chords from the text, returning only the lyrics.
      * @param text The song with chords.
+     * @param regex The regex to identify chords.
      * @return Clean text without chords.
      */
-    fun removeChords(text: String): String {
+    fun removeChords(text: String, regex: Regex = chordRegex): String {
         val lines = text.lines()
         return lines.map { line ->
-            chordRegex.replace(line, "").trimEnd()
+            regex.replace(line, "").trimEnd()
         }.filterIndexed { index, cleaned ->
             // Keep the line if it still has content, OR if it was originally an empty line.
             // This removes lines that were purely chords while preserving intended spacing.

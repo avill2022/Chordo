@@ -6,11 +6,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import avill.ladv.chordo.apps.app.helpers.ChordTransposer
 import avill.ladv.chordo.apps.app.model.Song
@@ -142,5 +142,32 @@ fun SongEditScreen(
             OutlinedTextField(value = urlgpt, onValueChange = { urlgpt = it }, label = { Text("GPT URL") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = urlpartiture, onValueChange = { urlpartiture = it }, label = { Text("Partiture URL") }, modifier = Modifier.fillMaxWidth())
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SongEditScreenPreview() {
+    val sampleSong = Song(
+        name = "Wonderwall",
+        tone = "G",
+        chords = "Em7 G D A7sus4",
+        rhythm = "Down Down Up Up Down Up",
+        tempo = "95",
+        content = "[Em7] Today is [G] gonna be the day",
+        tab = "",
+        structure = "",
+        harmony = "",
+        melody = "",
+        author = "Oasis",
+        folder = "Rock",
+        urlsong = "",
+        urltutorial = "",
+        urlmidi = "",
+        urlgpt = "",
+        urlpartiture = ""
+    )
+    MaterialTheme {
+        SongEditScreen(song = sampleSong, onSave = {}, onBack = {})
     }
 }

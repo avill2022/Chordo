@@ -15,6 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import avill.ladv.chordo.apps.app.helpers.AudioHelper
 import avill.ladv.chordo.apps.app.navigation.Chordo
 import avill.ladv.chordo.apps.app.uiscreens.LyricsScreen
 import avill.ladv.chordo.apps.app.uiscreens.SongEditScreen
@@ -24,7 +25,9 @@ import avill.ladv.chordo.apps.app.uiscreens.SongsListScreen
 @Composable
 fun NamePreviewDark() {
     ChordoApp(
-        viewModel = hiltViewModel()
+        viewModel = hiltViewModel(),
+        tempoViewModel = hiltViewModel(),
+        audioHelper = AudioHelper(LocalContext.current)
     )
 }
 
@@ -32,13 +35,19 @@ fun NamePreviewDark() {
 @Composable
 fun NamePreview() {
     ChordoApp(
-        viewModel = hiltViewModel()
+        viewModel = hiltViewModel(),
+        tempoViewModel = hiltViewModel(),
+        audioHelper = AudioHelper(LocalContext.current)
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun ChordoApp(viewModel: ChordoViewModel) {
+fun ChordoApp(
+    viewModel: ChordoViewModel,
+    tempoViewModel: TempoViewModel = hiltViewModel(),
+    audioHelper: AudioHelper
+) {
     val context = LocalContext.current
     val navController = rememberNavController()
     //viewModel.getTabs()
@@ -65,14 +74,9 @@ fun ChordoApp(viewModel: ChordoViewModel) {
                 searchText = uiState.searchText,
                 onSearchTextChange = { viewModel.onSearchTextChange(it) },
                 onSongClick = { song ->
-                    // Find index in the original list for navigation if needed, 
-                    // or pass an ID/Name for lookup in LyricsScreen
                     val index = viewModel.chords.value.songs.indexOf(song)
                     if (index != -1) {
                         navController.navigate("lyrics/$index")
-                    } else {
-                        // If it's a favorite not in the main list (offline maybe?)
-                        // Handle navigation by song name or similar if index doesn't work
                     }
                 },
                 onCreateClick = {
@@ -84,7 +88,9 @@ fun ChordoApp(viewModel: ChordoViewModel) {
                 selectedTab = uiState.selectedTab,
                 onTabSelected = { viewModel.onTabSelected(it) },
                 playlists = uiState.playlists,
-                onPlaylistClick = {}
+                onPlaylistClick = {},
+                tempoViewModel = tempoViewModel,
+                audioHelper = audioHelper
             )
         }
 
@@ -130,7 +136,9 @@ fun ChordoApp(viewModel: ChordoViewModel) {
                     onEditClick = {
                         navController.navigate(Chordo.Edit.route + "/$songId")
                     },
-                    onBackClick = { navController.popBackStack() }
+                    onBackClick = { navController.popBackStack() },
+                    tempoViewModel = tempoViewModel,
+                    audioHelper = audioHelper
                 )
             }
         }

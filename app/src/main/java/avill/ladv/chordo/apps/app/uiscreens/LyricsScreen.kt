@@ -1,5 +1,6 @@
 package avill.ladv.chordo.apps.app.uiscreens
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.horizontalScroll
@@ -17,9 +18,14 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import avill.ladv.chordo.apps.app.MetronomeTick
+import avill.ladv.chordo.apps.app.TempoViewModel
+import avill.ladv.chordo.apps.app.helpers.AudioHelper
 import avill.ladv.chordo.apps.app.helpers.ChordTransposer
+import avill.ladv.chordo.apps.app.helpers.convertAmericanToLatinAdvanced
 import avill.ladv.chordo.apps.app.helpers.extractTabsFlexible
 import avill.ladv.chordo.apps.app.helpers.replaceTabsFlexible
 import avill.ladv.chordo.apps.app.model.Song
@@ -38,22 +44,29 @@ fun LyricsScreen(
     onTranspose: (Int) -> Unit,
     onRestore: () -> Unit,
     onEditClick: () -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    tempoViewModel: TempoViewModel,
+    audioHelper: AudioHelper
 ) {
     var showPlaylistDialog by remember { mutableStateOf(false) }
     var showCreatePlaylistDialog by remember { mutableStateOf(false) }
+    var showTempoDialog by remember { mutableStateOf(false) }
     var newPlaylistName by remember { mutableStateOf("") }
     var isChordsRemoved by remember { mutableStateOf(false) }
+    var isAmericanLatinNotation by remember { mutableStateOf(false) }
+    var isMetronomePlaying by remember { mutableStateOf(false) }
+
+    val bpm by tempoViewModel.bpm.collectAsState()
 
     val scrollState = rememberScrollState()
     var isAutoScrolling by remember { mutableStateOf(false) }
     var scrollSpeed by remember { mutableIntStateOf(5) } // Default level 5
 
-    // Extract all tabs from song content and the explicit tab field
-    val allTabs = remember(song.content, song.tab) {
-        val fromTab = if (song.tab.isNotBlank()) extractTabsFlexible(song.tab) else emptyList()
-        val fromContent = extractTabsFlexible(song.content)
-        (fromTab + fromContent).distinctBy { it.content }
+    // Sync tempoViewModel with song's tempo when song changes
+    LaunchedEffect(song.name, song.folder) {
+        song.tempo.toIntOrNull()?.let {
+            tempoViewModel.setBPM(it)
+        }
     }
 
     LaunchedEffect(isAutoScrolling, scrollSpeed) {
@@ -120,10 +133,27 @@ fun LyricsScreen(
 
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                    horizontalArrangement = Arrangement.Center
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     OutlinedButton(onClick = { isChordsRemoved = !isChordsRemoved }) {
                         Text(if (isChordsRemoved) "S" else "R")
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    OutlinedButton(onClick = { isAmericanLatinNotation = !isAmericanLatinNotation }) {
+                        Text(if (isAmericanLatinNotation) "American" else "Latin")
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+                    OutlinedButton(onClick = { showTempoDialog = true }) {
+                        Text("Tempo: $bpm")
+                    }
+
+                    if(song.urlsong.isNotEmpty()){
+                        Spacer(modifier = Modifier.width(8.dp))
+                        OutlinedButton(onClick = { /* Open URL */ }) {
+                            Text("URL")
+                        }
                     }
                 }
                 
@@ -156,17 +186,23 @@ fun LyricsScreen(
                     .padding(16.dp)
             ) {
                 val chordColor = MaterialTheme.colorScheme.primary
-                val annotatedContent = remember(song.content, isChordsRemoved, chordColor) {
-                    // Replace tabs with placeholders for better readability in the lyrics view
-                    val textToProcess = replaceTabsFlexible(song.content)
+                val annotatedContent = remember(song.content, isChordsRemoved, chordColor, isAmericanLatinNotation) {
+                    var textToProcess = replaceTabsFlexible(song.content)
+                    
+                    val activeRegex = if (isAmericanLatinNotation) {
+                        textToProcess = convertAmericanToLatinAdvanced(textToProcess)
+                        ChordTransposer.latinChordRegex
+                    } else {
+                        ChordTransposer.chordRegex
+                    }
                     
                     if (isChordsRemoved) {
-                        buildAnnotatedString { append(ChordTransposer.removeChords(textToProcess)) }
+                        buildAnnotatedString { append(ChordTransposer.removeChords(textToProcess, activeRegex)) }
                     } else {
                         buildAnnotatedString {
                             val text = textToProcess
                             var lastIndex = 0
-                            ChordTransposer.chordRegex.findAll(text).forEach { match ->
+                            activeRegex.findAll(text).forEach { match ->
                                 append(text.substring(lastIndex, match.range.first))
                                 withStyle(style = SpanStyle(color = chordColor, fontWeight = FontWeight.Bold)) {
                                     append(match.value)
@@ -288,5 +324,43 @@ fun LyricsScreen(
                 }
             }
         )
+    }
+
+    if (showTempoDialog) {
+        AlertDialog(
+            onDismissRequest = { showTempoDialog = false },
+            title = { Text("Tempo & Metronome") },
+            text = {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth().padding(16.dp)
+                ) {
+                    Text(text = "$bpm BPM", style = MaterialTheme.typography.displayLarge)
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Slider(
+                        value = bpm.toFloat(),
+                        onValueChange = { tempoViewModel.setBPM(it.toInt()) },
+                        valueRange = 40f..240f,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = { isMetronomePlaying = !isMetronomePlaying },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(if (isMetronomePlaying) "Stop Metronome" else "Start Metronome")
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showTempoDialog = false }) {
+                    Text("Close")
+                }
+            }
+        )
+    }
+
+    if (isMetronomePlaying) {
+        MetronomeTick(bpm, audioHelper) { isMetronomePlaying = false }
     }
 }
