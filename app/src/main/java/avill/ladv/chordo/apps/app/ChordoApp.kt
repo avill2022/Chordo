@@ -3,6 +3,8 @@
 package avill.ladv.chordo.apps.app
 
 import android.content.res.Configuration
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
@@ -53,6 +55,26 @@ fun ChordoApp(
     viewModel.getTabs()
     val uiState by viewModel.uiState.collectAsState()
 
+    val exportLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("application/json")
+    ) { uri ->
+        uri?.let {
+            context.contentResolver.openOutputStream(it)?.use { outputStream ->
+                outputStream.write(viewModel.exportSongsJson().toByteArray())
+            }
+        }
+    }
+
+    val importLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        uri?.let {
+            context.contentResolver.openInputStream(it)?.bufferedReader()?.use { reader ->
+                viewModel.importSongsJson(reader.readText())
+            }
+        }
+    }
+
     NavHost(
         modifier = Modifier,
         navController = navController,
@@ -82,6 +104,8 @@ fun ChordoApp(
                 onSyncClick = { viewModel.getTabs() },
                 onUploadClick = { viewModel.uploadChords() },
                 onDownloadClick = { viewModel.downloadChords() },
+                onExportClick = { exportLauncher.launch("chordo_backup.json") },
+                onImportClick = { importLauncher.launch(arrayOf("application/json")) },
                 selectedTab = uiState.selectedTab,
                 onTabSelected = { viewModel.onTabSelected(it) },
                 playlists = uiState.playlists,

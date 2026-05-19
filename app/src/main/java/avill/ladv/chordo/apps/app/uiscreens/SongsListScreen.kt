@@ -8,7 +8,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -34,6 +34,8 @@ fun SongsListScreen(
     onSyncClick: () -> Unit,
     onUploadClick: () -> Unit,
     onDownloadClick: () -> Unit,
+    onExportClick: () -> Unit,
+    onImportClick: () -> Unit,
     selectedTab: Int,
     onTabSelected: (Int) -> Unit,
     tempoViewModel: TempoViewModel,
@@ -59,21 +61,43 @@ fun SongsListScreen(
                             singleLine = true,
                             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) }
                         )
-                        IconButton(onClick = onSyncClick) {
-                            Icon(Icons.Default.Refresh, contentDescription = "Sync with server")
-                        }
-                    }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        TextButton(onClick = onUploadClick) {
-                            Text("Upload", style = MaterialTheme.typography.labelLarge)
-                        }
-                        TextButton(onClick = onDownloadClick) {
-                            Text("Download", style = MaterialTheme.typography.labelLarge)
+                        //add an 'Options Menu' with sync, upload and download, import, and export (json) and options
+                        var showMenu by remember { mutableStateOf(false) }
+                        Box {
+                            IconButton(onClick = { showMenu = true }) {
+                                Icon(Icons.Default.MoreVert, contentDescription = "Options")
+                            }
+                            DropdownMenu(
+                                expanded = showMenu,
+                                onDismissRequest = { showMenu = false }
+                            ) {
+                                DropdownMenuItem(
+                                    text = { Text("Sync with server") },
+                                    onClick = { onSyncClick(); showMenu = false },
+                                    leadingIcon = { Icon(Icons.Default.Refresh, null) }
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("Upload to server") },
+                                    onClick = { onUploadClick(); showMenu = false },
+                                    leadingIcon = { Icon(Icons.Default.CloudUpload, null) }
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("Download from server") },
+                                    onClick = { onDownloadClick(); showMenu = false },
+                                    leadingIcon = { Icon(Icons.Default.CloudDownload, null) }
+                                )
+                                HorizontalDivider()
+                                DropdownMenuItem(
+                                    text = { Text("Export to JSON") },
+                                    onClick = { onExportClick(); showMenu = false },
+                                    leadingIcon = { Icon(Icons.Default.Save, null) }
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("Import from JSON") },
+                                    onClick = { onImportClick(); showMenu = false },
+                                    leadingIcon = { Icon(Icons.Default.DriveFolderUpload, null) }
+                                )
+                            }
                         }
                     }
                 }
@@ -268,6 +292,8 @@ fun SongsListScreenPreview() {
             onSyncClick = {},
             onUploadClick = {},
             onDownloadClick = {},
+            onExportClick = {},
+            onImportClick = {},
             selectedTab = 0,
             onTabSelected = {},
             tempoViewModel = TempoViewModel(),

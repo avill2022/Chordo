@@ -247,6 +247,23 @@ class ChordoViewModel
             }
         }
     }
+
+    fun exportSongsJson(): String {
+        return Gson().toJson(_chords.value)
+    }
+
+    fun importSongsJson(json: String) {
+        try {
+            val importedChords = Gson().fromJson(json, Chords::class.java)
+            if (importedChords != null) {
+                _chords.value = importedChords
+                repository.getMyFilesManager().save("chords_cache.json", json)
+                updateFilteredSongs()
+            }
+        } catch (e: Exception) {
+            Log.e("ChordoViewModel", "Import failed: ${e.message}")
+        }
+    }
 }
 
 fun Song.toFavoriteSong() = FavoriteSong(
