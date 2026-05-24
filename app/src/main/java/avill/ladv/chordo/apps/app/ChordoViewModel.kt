@@ -244,6 +244,7 @@ class ChordoViewModel
             val json = Gson().toJson(_chords.value)
             try {
                 chordoApiService.saveChords(json)
+                Log.i("ChordoViewModel","OK!")
             } catch (e: Exception) {
                 Log.e("ChordoViewModel", "Error UPLOAD song: ${e.message}")
             }
