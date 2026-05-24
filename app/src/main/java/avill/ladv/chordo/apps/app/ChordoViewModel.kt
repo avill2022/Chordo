@@ -125,7 +125,8 @@ class ChordoViewModel
 
     fun getTabs() {
         viewModelScope.launch(Dispatchers.IO) {
-            getTabsFromServer()
+            //getTabsFromServer()
+            getTabsFromLocal()
         }
     }
 
