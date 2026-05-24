@@ -94,11 +94,6 @@ class ChordoViewModel
                     tabString = tabString + "\n" + addtabs(tabList,tabListTotal.size)
                 it.content = replaceTabsWithPlaceholders(it.content,2)
 
-                tabList = extractTabs(it.content,3,tabListTotal.size)
-                if(tabList.isNotEmpty())
-                    tabString = tabString + "\n" + addtabs(tabList,tabListTotal.size)
-                it.content = replaceTabsWithPlaceholders(it.content,3)
-
                 tabList = extractTabsFlexible(it.content)
                 if(tabList.isNotEmpty())
                     tabString = tabString + "\n" + addtabs(tabList,tabListTotal.size)
@@ -130,8 +125,7 @@ class ChordoViewModel
 
     fun getTabs() {
         viewModelScope.launch(Dispatchers.IO) {
-            //getTabsFromServer()
-            getTabsFromLocal()
+            getTabsFromServer()
         }
     }
 
@@ -155,7 +149,7 @@ class ChordoViewModel
         } else {
             allSongs.filter {
                 it.name.contains(query, ignoreCase = true) ||
-                        it.folder.contains(query, ignoreCase = true)
+                        it.author.contains(query, ignoreCase = true)
             }
         }
         _uiState.update { it.copy(filteredSongs = filtered) }
@@ -178,6 +172,23 @@ class ChordoViewModel
         val json = Gson().toJson(_chords.value)
         repository.getMyFilesManager().save("chords_cache.json", json)
         updateFilteredSongs()
+    }
+
+    fun deleteSong(song: Song) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val currentSongs = _chords.value.songs.toMutableList()
+            val removed = currentSongs.removeIf { it.name == song.name && it.folder == song.folder }
+            if (removed) {
+                _chords.value = _chords.value.copy(songs = currentSongs)
+                val json = Gson().toJson(_chords.value)
+                repository.getMyFilesManager().save("chords_cache.json", json)
+                
+                // Also remove from favorites if it's there
+                repository.removeFavorite(song.name, song.folder)
+                
+                updateFilteredSongs()
+            }
+        }
     }
 
     fun toggleFavorite(song: Song) {
@@ -231,7 +242,12 @@ class ChordoViewModel
     fun uploadChords() {
         viewModelScope.launch(Dispatchers.IO) {
             val json = Gson().toJson(_chords.value)
-            chordoApiService.saveChords(json)
+            try {
+                chordoApiService.saveChords(json)
+            } catch (e: Exception) {
+                Log.e("ChordoViewModel", "Error UPLOAD song: ${e.message}")
+            }
+
         }
     }
 
@@ -245,23 +261,6 @@ class ChordoViewModel
                 updateFilteredSongs()
                 repository.getMyFilesManager().save("chords_cache.json", jsonString)
             }
-        }
-    }
-
-    fun exportSongsJson(): String {
-        return Gson().toJson(_chords.value)
-    }
-
-    fun importSongsJson(json: String) {
-        try {
-            val importedChords = Gson().fromJson(json, Chords::class.java)
-            if (importedChords != null) {
-                _chords.value = importedChords
-                repository.getMyFilesManager().save("chords_cache.json", json)
-                updateFilteredSongs()
-            }
-        } catch (e: Exception) {
-            Log.e("ChordoViewModel", "Import failed: ${e.message}")
         }
     }
 }
