@@ -66,6 +66,7 @@ class ChordoViewModel
     }
 
     suspend fun getTabsFromServer(){
+        _uiState.update { it.copy(loading = true) }
         try {
             val chords = repository.remoteDataSource.apiChords.getAll()
             _chords.value = chords
@@ -107,10 +108,13 @@ class ChordoViewModel
             repository.getMyFilesManager().save("chords_cache.json", json)
         } catch (e: Exception) {
             getTabsFromLocal()
+        } finally {
+            _uiState.update { it.copy(loading = false) }
         }
     }
 
     fun getTabsFromLocal(){
+        _uiState.update { it.copy(loading = true) }
         try {
             val json = repository.getMyFilesManager().getInformation("chords_cache.json")
             if (json.isNotEmpty()) {
@@ -120,6 +124,8 @@ class ChordoViewModel
             }
         } catch (fileEx: Exception) {
             Log.e("ChordoViewModel", "Error recovering from file: ${fileEx.message}")
+        } finally {
+            _uiState.update { it.copy(loading = false) }
         }
     }
 
@@ -173,6 +179,21 @@ class ChordoViewModel
         val json = Gson().toJson(_chords.value)
         repository.getMyFilesManager().save("chords_cache.json", json)
         updateFilteredSongs()
+        
+        // Also save individual song to server
+        saveChordToServer(song)
+    }
+
+    fun saveChordToServer(song: Song) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val songJson = Gson().toJson(song)
+                chordoApiService.saveChord(songJson)
+                Log.i("ChordoViewModel", "Individual song saved to server successfully")
+            } catch (e: Exception) {
+                Log.e("ChordoViewModel", "Error saving individual song to server: ${e.message}")
+            }
+        }
     }
 
     fun deleteSong(song: Song) {
@@ -228,41 +249,72 @@ class ChordoViewModel
         saveSong(song.copy(content = newContent))
     }
 
+    fun updateSongTempo(song: Song, tempo: Int) {
+        saveSong(song.copy(tempo = tempo.toString()))
+    }
+
     fun restoreSong(song: Song) {
         viewModelScope.launch(Dispatchers.IO) {
+            _uiState.update { it.copy(loading = true) }
             try {
                 val chords = repository.remoteDataSource.apiChords.getAll()
                 val original = chords.songs.find { it.name == song.name && it.folder == song.folder }
                 original?.let { saveSong(it) }
             } catch (e: Exception) {
                 Log.e("ChordoViewModel", "Error restoring song: ${e.message}")
+            } finally {
+                _uiState.update { it.copy(loading = false) }
             }
         }
     }
 
     fun uploadChords() {
         viewModelScope.launch(Dispatchers.IO) {
+            _uiState.update { it.copy(loading = true) }
             val json = Gson().toJson(_chords.value)
             try {
                 chordoApiService.saveChords(json)
-                Log.i("ChordoViewModel","OK!")
+                Log.i("ChordoViewModel","Full chords backup uploaded successfully")
             } catch (e: Exception) {
-                Log.e("ChordoViewModel", "Error UPLOAD song: ${e.message}")
+                Log.e("ChordoViewModel", "Error uploading chords backup: ${e.message}")
+            } finally {
+                _uiState.update { it.copy(loading = false) }
             }
-
         }
     }
 
     fun downloadChords() {
         viewModelScope.launch(Dispatchers.IO) {
-            val response = chordoApiService.getChords()
-            if (response.isSuccessful) {
-                val jsonString = response.body() ?: return@launch
-                val chordsFromFile = Gson().fromJson(jsonString, Chords::class.java)
-                _chords.value = chordsFromFile
-                updateFilteredSongs()
-                repository.getMyFilesManager().save("chords_cache.json", jsonString)
+            _uiState.update { it.copy(loading = true) }
+            try {
+                val response = chordoApiService.getChords()
+                if (response.isSuccessful) {
+                    val jsonString = response.body() ?: return@launch
+                    val chordsFromFile = Gson().fromJson(jsonString, Chords::class.java)
+                    _chords.value = chordsFromFile
+                    updateFilteredSongs()
+                    repository.getMyFilesManager().save("chords_cache.json", jsonString)
+                }
+            } finally {
+                _uiState.update { it.copy(loading = false) }
             }
+        }
+    }
+
+    fun exportSongsJson(): String {
+        return Gson().toJson(_chords.value)
+    }
+
+    fun importSongsJson(json: String) {
+        try {
+            val importedChords = Gson().fromJson(json, Chords::class.java)
+            if (importedChords != null) {
+                _chords.value = importedChords
+                repository.getMyFilesManager().save("chords_cache.json", json)
+                updateFilteredSongs()
+            }
+        } catch (e: Exception) {
+            Log.e("ChordoViewModel", "Import failed: ${e.message}")
         }
     }
 }

@@ -82,7 +82,7 @@ fun LyricsScreen(
     LaunchedEffect(isAutoScrolling, scrollSpeed) {
         if (isAutoScrolling) {
             while (true) {
-                val delayTime = (100L / (scrollSpeed * 0.5 + 0.5)).toLong()
+                val delayTime = (100L / (scrollSpeed )).toLong()
                 scrollState.scrollBy(1f)
                 delay(delayTime)
             }
