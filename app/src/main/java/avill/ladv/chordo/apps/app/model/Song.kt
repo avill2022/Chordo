@@ -5,7 +5,7 @@ data class Song(
     var tone: String,
     var chords: String,
     val rhythm: String,
-    val tempo: String,
+    var tempo: String,
     var content: String,
     var tab: String,
 

@@ -29,6 +29,7 @@ import avill.ladv.chordo.data.local.db.room.entities.Playlist
 fun SongsListScreen(
     songs: List<Song>,
     playlists: List<Playlist>,
+    isLoading: Boolean,
     searchText: String,
     onSearchTextChange: (String) -> Unit,
     onSongClick: (Song) -> Unit,
@@ -83,7 +84,13 @@ fun SongsListScreen(
                             onValueChange = onSearchTextChange,
                             modifier = Modifier.weight(1f),
                             placeholder = { 
-                                Text(if (selectedTab == 2) "Search playlists..." else "Search songs or artists...") 
+                                Text(
+                                    when (selectedTab) {
+                                        2 -> "Search playlists..."
+                                        1 -> "Search favorites..."
+                                        else -> "Search songs or artists..."
+                                    }
+                                ) 
                             },
                             singleLine = true,
                             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) }
@@ -126,6 +133,26 @@ fun SongsListScreen(
                             }
                         }
                     }
+                    if (selectedTab == 1 || selectedTab == 2) {
+                        TabRow(
+                            selectedTabIndex = if (selectedTab == 1) 0 else 1,
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            contentColor = MaterialTheme.colorScheme.primary
+                        ) {
+                            Tab(
+                                selected = selectedTab == 1,
+                                onClick = { onTabSelected(1) },
+                                text = { Text("Favorites") },
+                                icon = { Icon(Icons.Default.Favorite, contentDescription = null) }
+                            )
+                            Tab(
+                                selected = selectedTab == 2,
+                                onClick = { onTabSelected(2) },
+                                text = { Text("Playlists") },
+                                icon = { Icon(Icons.Default.LibraryMusic, contentDescription = null) }
+                            )
+                        }
+                    }
                 }
             }
         },
@@ -138,16 +165,14 @@ fun SongsListScreen(
                     label = { Text("All") }
                 )
                 NavigationBarItem(
-                    selected = selectedTab == 1,
-                    onClick = { onTabSelected(1) },
-                    icon = { Icon(Icons.Default.Favorite, contentDescription = "Favorites") },
-                    label = { Text("Favorites") }
-                )
-                NavigationBarItem(
-                    selected = selectedTab == 2,
-                    onClick = { onTabSelected(2) },
-                    icon = { Icon(Icons.Default.LibraryMusic, contentDescription = "Playlists") },
-                    label = { Text("Playlists") }
+                    selected = selectedTab == 1 || selectedTab == 2,
+                    onClick = { 
+                        if (selectedTab != 1 && selectedTab != 2) {
+                            onTabSelected(1)
+                        }
+                    },
+                    icon = { Icon(Icons.Default.LibraryMusic, contentDescription = "Library") },
+                    label = { Text("Library") }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 3,
@@ -161,10 +186,16 @@ fun SongsListScreen(
                     icon = { Icon(Icons.Default.MusicNote, contentDescription = "Tuner") },
                     label = { Text("Tuner") }
                 )
+                NavigationBarItem(
+                    selected = selectedTab == 5,
+                    onClick = { onTabSelected(5) },
+                    icon = { Icon(Icons.Default.Build, contentDescription = "Tools") },
+                    label = { Text("Tools") }
+                )
             }
         },
         floatingActionButton = {
-            if (selectedTab < 2) {
+            if (selectedTab < 3) {
                 FloatingActionButton(onClick = onCreateClick) {
                     Icon(Icons.Default.Add, contentDescription = "Add Song")
                 }
@@ -172,51 +203,58 @@ fun SongsListScreen(
         }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
-            when (selectedTab) {
-                3 -> TempoApp(tempoViewModel, audioHelper)
-                4 -> TunerApp()
-                else -> {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                    ) {
-                        if (selectedTab == 2) {
-                            val filteredPlaylists = playlists.filter { it.name.contains(searchText, ignoreCase = true) }
-                            if (filteredPlaylists.isEmpty()) {
-                                item {
-                                    Box(
-                                        modifier = Modifier.fillParentMaxSize(),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text("No playlists found", color = MaterialTheme.colorScheme.outline)
+            if (isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                when (selectedTab) {
+                    3 -> TempoApp(tempoViewModel, audioHelper)
+                    4 -> TunerApp()
+                    5 -> ToolsScreen()
+                    else -> {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                        ) {
+                            if (selectedTab == 2) {
+                                val filteredPlaylists = playlists.filter { it.name.contains(searchText, ignoreCase = true) }
+                                if (filteredPlaylists.isEmpty()) {
+                                    item {
+                                        Box(
+                                            modifier = Modifier.fillParentMaxSize(),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Text("No playlists found", color = MaterialTheme.colorScheme.outline)
+                                        }
                                     }
                                 }
-                            }
-                            itemsIndexed(filteredPlaylists) { _, playlist ->
-                                PlaylistItem(
-                                    playlist = playlist,
-                                    onClick = { onPlaylistClick(playlist) }
-                                )
-                            }
-                        } else {
-                            if (songs.isEmpty()) {
-                                item {
-                                    Box(
-                                        modifier = Modifier.fillParentMaxSize(),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            text = if (selectedTab == 1) "No favorites yet" else "No songs found",
-                                            color = MaterialTheme.colorScheme.outline
-                                        )
+                                itemsIndexed(filteredPlaylists) { _, playlist ->
+                                    PlaylistItem(
+                                        playlist = playlist,
+                                        onClick = { onPlaylistClick(playlist) }
+                                    )
+                                }
+                            } else {
+                                if (songs.isEmpty()) {
+                                    item {
+                                        Box(
+                                            modifier = Modifier.fillParentMaxSize(),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Text(
+                                                text = if (selectedTab == 1) "No favorites yet" else "No songs found",
+                                                color = MaterialTheme.colorScheme.outline
+                                            )
+                                        }
                                     }
                                 }
-                            }
-                            itemsIndexed(songs) { _, song ->
-                                SongItem(
-                                    song = song,
-                                    onClick = { onSongClick(song) },
-                                    onLongClick = { songToDelete = song }
-                                )
+                                itemsIndexed(songs) { _, song ->
+                                    SongItem(
+                                        song = song,
+                                        onClick = { onSongClick(song) },
+                                        onLongClick = { songToDelete = song }
+                                    )
+                                }
                             }
                         }
                     }
@@ -303,5 +341,35 @@ fun PlaylistItem(
 @Preview(showBackground = true)
 @Composable
 fun SongsListScreenPreview() {
-    // Preview logic remains similar
+    val sampleSongs = listOf(
+        Song(name = "Wonderwall", author = "Oasis", tone = "G", chords = "", rhythm = "", tempo = "", content = "", tab = "TAB", structure = "", harmony = "", melody = "", folder = "", urlsong = "", urltutorial = "", urlmidi = "", urlgpt = "", urlpartiture = ""),
+        Song(name = "Wish You Were Here", author = "Pink Floyd", tone = "G", chords = "", rhythm = "", tempo = "", content = "", tab = "", structure = "", harmony = "", melody = "", folder = "", urlsong = "", urltutorial = "", urlmidi = "", urlgpt = "", urlpartiture = "")
+    )
+    val samplePlaylists = listOf(
+        Playlist(id = 1, name = "My Favorites"),
+        Playlist(id = 2, name = "Rock")
+    )
+    
+    MaterialTheme {
+        SongsListScreen(
+            songs = sampleSongs,
+            playlists = samplePlaylists,
+            isLoading = false,
+            searchText = "",
+            onSearchTextChange = {},
+            onSongClick = {},
+            onPlaylistClick = {},
+            onCreateClick = {},
+            onSyncClick = {},
+            onUploadClick = {},
+            onDownloadClick = {},
+            onExportClick = {},
+            onImportClick = {},
+            onDeleteSong = {},
+            selectedTab = 0,
+            onTabSelected = {},
+            tempoViewModel = TempoViewModel(),
+            audioHelper = AudioHelper(LocalContext.current)
+        )
+    }
 }

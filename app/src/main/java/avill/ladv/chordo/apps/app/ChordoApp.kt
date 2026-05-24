@@ -85,6 +85,7 @@ fun ChordoApp(
             SongsListScreen(
                 songs = uiState.filteredSongs,
                 searchText = uiState.searchText,
+                isLoading = uiState.isLoading,
                 onSearchTextChange = { viewModel.onSearchTextChange(it) },
                 onSongClick = { song ->
                     val index = viewModel.chords.value.songs.indexOf(song)
@@ -106,7 +107,8 @@ fun ChordoApp(
                 playlists = uiState.playlists,
                 onPlaylistClick = {},
                 tempoViewModel = tempoViewModel,
-                audioHelper = audioHelper
+                audioHelper = audioHelper,
+
             )
         }
 
@@ -154,7 +156,10 @@ fun ChordoApp(
                     },
                     onBackClick = { navController.popBackStack() },
                     tempoViewModel = tempoViewModel,
-                    audioHelper = audioHelper
+                    audioHelper = audioHelper,
+                    onTempoChange = {
+                        //tempoViewModel.setBPM(it)
+                    }
                 )
             }
         }
