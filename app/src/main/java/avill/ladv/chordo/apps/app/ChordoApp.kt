@@ -58,15 +58,22 @@ fun ChordoApp(
     val exportLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument("application/json")
     ) { uri ->
-        // Note: You'll need to implement exportSongsJson() in ViewModel
-        // uri?.let { ... }
+        uri?.let {
+            context.contentResolver.openOutputStream(it)?.use { outputStream ->
+                outputStream.write(viewModel.exportSongsJson().toByteArray())
+            }
+        }
     }
 
     val importLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument()
     ) { uri ->
-        // Note: You'll need to implement importSongsJson() in ViewModel
-        // uri?.let { ... }
+        uri?.let {
+            context.contentResolver.openInputStream(it)?.use { inputStream ->
+                val json = inputStream.bufferedReader().use { it.readText() }
+                viewModel.importSongsJson(json)
+            }
+        }
     }
 
     NavHost(
@@ -99,8 +106,12 @@ fun ChordoApp(
                 onSyncClick = { viewModel.getTabs() },
                 onUploadClick = { viewModel.uploadChords() },
                 onDownloadClick = { viewModel.downloadChords() },
-                onExportClick = { /* launcher call */ },
-                onImportClick = { /* launcher call */ },
+                onExportClick = {
+                    exportLauncher.launch("chordo_backup.json")
+                },
+                onImportClick = {
+                    importLauncher.launch(arrayOf("application/json"))
+                },
                 onDeleteSong = { viewModel.deleteSong(it) },
                 selectedTab = uiState.selectedTab,
                 onTabSelected = { viewModel.onTabSelected(it) },
