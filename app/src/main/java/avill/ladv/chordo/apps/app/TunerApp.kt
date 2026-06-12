@@ -1,12 +1,6 @@
 package avill.ladv.chordo.apps.app
 
-// MainActivity.kt
-import android.Manifest
-import android.os.Build
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
@@ -15,46 +9,35 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.rotate
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import avill.ladv.chordo.R
 import avill.ladv.chordo.apps.app.helpers.PitchDetector
-import kotlinx.coroutines.launch
+import avill.ladv.chordo.apps.app.uiscreens.PermissionScreen
+import java.util.Locale
 import kotlin.math.abs
 
-class MainActivity : ComponentActivity() {
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        // Handle permission result
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
-        }
-
-        setContent {
-            MaterialTheme {
-                TunerApp()
-            }
-        }
-    }
-}
-
 @Composable
-fun TunerApp(viewModel: TunerViewModel = viewModel()) {
+fun TunerApp(
+    viewModel: TunerViewModel = viewModel(),
+    isAudioPermissionGranted: Boolean = false,
+    onRequestPermission: () -> Unit = {}
+) {
+    if (!isAudioPermissionGranted) {
+        PermissionScreen(
+            onRequestPermission = onRequestPermission,
+            onContinue = {}
+        )
+        return
+    }
+
     val tunerState by viewModel.tunerState.collectAsState()
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     val detector = remember { PitchDetector() }
     var isListening by remember { mutableStateOf(false) }
 
@@ -78,7 +61,7 @@ fun TunerApp(viewModel: TunerViewModel = viewModel()) {
     ) {
         // Title
         Text(
-            text = "Guitar Tuner",
+            text = stringResource(R.string.tuner_title),
             style = MaterialTheme.typography.headlineMedium
         )
 
@@ -106,13 +89,13 @@ fun TunerApp(viewModel: TunerViewModel = viewModel()) {
                 // Target String
                 tunerState.closestString?.let { string ->
                     Text(
-                        text = "${string.name}${string.stringNumber} String",
+                        text = stringResource(R.string.string_name_format, string.name, string.stringNumber),
                         fontSize = 20.sp,
                         color = Color.Gray
                     )
 
                     Text(
-                        text = "${string.frequency} Hz",
+                        text = stringResource(R.string.frequency_hz_format, string.frequency),
                         fontSize = 16.sp,
                         color = Color.Gray
                     )
@@ -123,8 +106,8 @@ fun TunerApp(viewModel: TunerViewModel = viewModel()) {
                 // Frequency Display
                 Text(
                     text = if (tunerState.detectedFrequency > 0)
-                        "${String.format("%.1f", tunerState.detectedFrequency)} Hz"
-                    else "Waiting for input...",
+                        stringResource(R.string.frequency_hz_format, tunerState.detectedFrequency)
+                    else stringResource(R.string.waiting_for_input),
                     fontSize = 18.sp,
                     color = Color.LightGray
                 )
@@ -136,7 +119,7 @@ fun TunerApp(viewModel: TunerViewModel = viewModel()) {
 
         // Guitar Strings Grid
         Text(
-            text = "Tune each string",
+            text = stringResource(R.string.tune_each_string),
             style = MaterialTheme.typography.titleMedium
         )
 
@@ -158,7 +141,7 @@ fun TunerApp(viewModel: TunerViewModel = viewModel()) {
             )
         ) {
             Text(
-                if (isListening) "Stop Listening" else "Start Tuner",
+                if (isListening) stringResource(R.string.stop_listening) else stringResource(R.string.start_tuner),
                 fontSize = 18.sp
             )
         }
@@ -166,11 +149,11 @@ fun TunerApp(viewModel: TunerViewModel = viewModel()) {
         // Status Text
         Text(
             text = when {
-                !isListening -> "Tap Start to begin tuning"
-                !tunerState.pitchDetected -> "Playing a string..."
-                tunerState.isInTune -> "✓ In tune!"
-                tunerState.centsOffset < 0 -> "♭ Flat - Tune up"
-                else -> "♯ Sharp - Tune down"
+                !isListening -> stringResource(R.string.status_tap_start)
+                !tunerState.pitchDetected -> stringResource(R.string.status_playing)
+                tunerState.isInTune -> stringResource(R.string.status_in_tune)
+                tunerState.centsOffset < 0 -> stringResource(R.string.status_flat)
+                else -> stringResource(R.string.status_sharp)
             },
             color = when {
                 tunerState.isInTune -> Color.Green
@@ -191,7 +174,7 @@ fun TunerMeter(centsOffset: Int) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Tuning Meter",
+            text = stringResource(R.string.tuning_meter),
             style = MaterialTheme.typography.bodyMedium
         )
 
@@ -256,7 +239,11 @@ fun TunerMeter(centsOffset: Int) {
         }
 
         Text(
-            text = "${centsOffset} cents ${if (centsOffset < 0) "♭" else if (centsOffset > 0) "♯" else ""}",
+            text = stringResource(
+                R.string.cents_offset_format,
+                centsOffset,
+                if (centsOffset < 0) "♭" else if (centsOffset > 0) "♯" else ""
+            ),
             fontSize = 16.sp,
             color = if (abs(centsOffset) <= 5) Color.Green else Color.Yellow
         )
@@ -306,12 +293,12 @@ fun needPermissionScreen() {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Microphone Permission Required",
+            text = stringResource(R.string.permission_required_title),
             style = MaterialTheme.typography.headlineSmall
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "Please grant microphone permission to use the tuner",
+            text = stringResource(R.string.permission_required_desc),
             color = Color.Gray
         )
     }

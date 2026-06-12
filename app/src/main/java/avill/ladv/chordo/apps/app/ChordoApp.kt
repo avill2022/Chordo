@@ -8,8 +8,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,6 +22,8 @@ import androidx.navigation.compose.rememberNavController
 import avill.ladv.chordo.apps.app.helpers.AudioHelper
 import avill.ladv.chordo.apps.app.navigation.Chordo
 import avill.ladv.chordo.apps.app.uiscreens.LyricsScreen
+import avill.ladv.chordo.apps.app.uiscreens.OnboardingScreen
+import avill.ladv.chordo.apps.app.uiscreens.PermissionScreen
 import avill.ladv.chordo.apps.app.uiscreens.SongEditScreen
 import avill.ladv.chordo.apps.app.uiscreens.SongsListScreen
 
@@ -29,7 +33,8 @@ fun NamePreviewDark() {
     ChordoApp(
         viewModel = hiltViewModel(),
         tempoViewModel = hiltViewModel(),
-        audioHelper = AudioHelper(LocalContext.current)
+        audioHelper = AudioHelper(LocalContext.current),
+        onRequestPermission = {}
     )
 }
 
@@ -39,21 +44,39 @@ fun NamePreview() {
     ChordoApp(
         viewModel = hiltViewModel(),
         tempoViewModel = hiltViewModel(),
-        audioHelper = AudioHelper(LocalContext.current)
+        audioHelper = AudioHelper(LocalContext.current),
+        onRequestPermission = {}
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun ChordoApp(
+    mainViewModel: MainViewModel = hiltViewModel(),
     viewModel: ChordoViewModel,
     tempoViewModel: TempoViewModel = hiltViewModel(),
-    audioHelper: AudioHelper
+    audioHelper: AudioHelper,
+    onRequestPermission: () -> Unit
 ) {
     val context = LocalContext.current
     val navController = rememberNavController()
     viewModel.getTabs()
     val uiState by viewModel.uiState.collectAsState()
+    
+    val isFirstLaunch by mainViewModel.isFirstLaunch.collectAsState()
+    val isAudioPermissionGranted by mainViewModel.isAudioPermissionGranted.collectAsState()
+
+    val startDestination = remember(isFirstLaunch) {
+        if (isFirstLaunch) Chordo.OnBoarding.route else Chordo.List.route
+    }
+
+    LaunchedEffect(isAudioPermissionGranted) {
+        if (isAudioPermissionGranted && navController.currentDestination?.route == Chordo.Permissions.route) {
+            navController.navigate(Chordo.List.route) {
+                popUpTo(Chordo.Permissions.route) { inclusive = true }
+            }
+        }
+    }
 
     val exportLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument("application/json")
@@ -79,13 +102,27 @@ fun ChordoApp(
     NavHost(
         modifier = Modifier,
         navController = navController,
-        startDestination = Chordo.List.route
+        startDestination = startDestination
     ) {
         composable(Chordo.OnBoarding.route) {
-            // OnBoarding Screen
+            OnboardingScreen(
+                onFinished = {
+                    mainViewModel.completeOnboarding()
+                    navController.navigate(Chordo.Permissions.route) {
+                        popUpTo(Chordo.OnBoarding.route) { inclusive = true }
+                    }
+                }
+            )
         }
         composable(Chordo.Permissions.route) {
-            // Permissions Screen
+            PermissionScreen(
+                onRequestPermission = onRequestPermission,
+                onContinue = {
+                    navController.navigate(Chordo.List.route) {
+                        popUpTo(Chordo.Permissions.route) { inclusive = true }
+                    }
+                }
+            )
         }
         
         composable(Chordo.List.route) {
@@ -119,7 +156,8 @@ fun ChordoApp(
                 onPlaylistClick = {},
                 tempoViewModel = tempoViewModel,
                 audioHelper = audioHelper,
-
+                isAudioPermissionGranted = isAudioPermissionGranted,
+                onRequestPermission = onRequestPermission
             )
         }
 

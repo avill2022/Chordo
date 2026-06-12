@@ -9,8 +9,10 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import avill.ladv.chordo.R
 import avill.ladv.chordo.apps.app.helpers.ChordFinder
 
 @Composable
@@ -27,7 +29,7 @@ fun ToolsScreen(
             .padding(16.dp)
     ) {
         Text(
-            text = "Chord Finder",
+            text = stringResource(R.string.chord_finder),
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 16.dp)
@@ -37,7 +39,7 @@ fun ToolsScreen(
             value = chordQuery,
             onValueChange = { chordQuery = it },
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Enter chord (e.g., C, Am, G7)") },
+            placeholder = { Text(stringResource(R.string.chord_placeholder)) },
             trailingIcon = {
                 IconButton(onClick = {
                     if (chordQuery.isNotBlank()) {
@@ -45,7 +47,7 @@ fun ToolsScreen(
                         variations = chordFinder.getMatrix(chordQuery)
                     }
                 }) {
-                    Icon(Icons.Default.Search, contentDescription = "Search")
+                    Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search_content_description))
                 }
             },
             singleLine = true
@@ -55,7 +57,7 @@ fun ToolsScreen(
 
         if (variations.isNotEmpty()) {
             Text(
-                text = "Variations for $searchedChord",
+                text = stringResource(R.string.chord_variations_title, searchedChord),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
@@ -74,7 +76,7 @@ fun ToolsScreen(
             }
         } else if (searchedChord.isNotBlank()) {
             Text(
-                text = "No variations found for '$searchedChord'",
+                text = stringResource(R.string.no_variations_found, searchedChord),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.error
             )

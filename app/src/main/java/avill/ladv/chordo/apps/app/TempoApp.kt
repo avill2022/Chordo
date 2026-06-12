@@ -24,8 +24,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import avill.ladv.chordo.R
 import avill.ladv.chordo.apps.app.helpers.AudioHelper
 import kotlinx.coroutines.delay
 
@@ -43,7 +45,7 @@ fun TempoApp(viewModel: TempoViewModel = viewModel(), audioHelper: AudioHelper) 
     ) {
         // BPM Display
         Text(
-            text = "$bpm BPM",
+            text = stringResource(R.string.bpm_label, bpm),
             style = MaterialTheme.typography.displayLarge
         )
 
@@ -54,7 +56,7 @@ fun TempoApp(viewModel: TempoViewModel = viewModel(), audioHelper: AudioHelper) 
             onClick = { viewModel.addTap() },
             modifier = Modifier.size(120.dp)
         ) {
-            Text("TAP", style = MaterialTheme.typography.headlineMedium)
+            Text(stringResource(R.string.tap_button), style = MaterialTheme.typography.headlineMedium)
         }
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -68,7 +70,7 @@ fun TempoApp(viewModel: TempoViewModel = viewModel(), audioHelper: AudioHelper) 
             }
 
             Button(onClick = { viewModel.resetToDefault() }) {
-                Text("Reset")
+                Text(stringResource(R.string.reset_button))
             }
 
             Button(onClick = { viewModel.incrementBPM() }) {
@@ -92,7 +94,7 @@ fun TempoApp(viewModel: TempoViewModel = viewModel(), audioHelper: AudioHelper) 
         Button(
             onClick = { isMetronomePlaying = !isMetronomePlaying }
         ) {
-            Text(if (isMetronomePlaying) "Stop Metronome" else "Start Metronome")
+            Text(if (isMetronomePlaying) stringResource(R.string.stop_metronome) else stringResource(R.string.start_metronome))
         }
     }
 

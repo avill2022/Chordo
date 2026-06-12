@@ -18,10 +18,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import avill.ladv.chordo.R
 import avill.ladv.chordo.apps.app.helpers.ChordTransposer
 import avill.ladv.chordo.apps.app.model.Song
 
@@ -55,10 +57,10 @@ fun SongEditScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (song == null) "New Song" else "Edit Song") },
+                title = { Text(if (song == null) stringResource(R.string.new_song) else stringResource(R.string.edit_song)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
                 actions = {
@@ -70,7 +72,7 @@ fun SongEditScreen(
                     ) {
                         Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(18.dp))
                         Spacer(Modifier.width(8.dp))
-                        Text("Save")
+                        Text(stringResource(R.string.save))
                     }
                 }
             )
@@ -87,32 +89,32 @@ fun SongEditScreen(
             // Section 1: Identity
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text("Basic Info", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+                    Text(stringResource(R.string.basic_info), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
                     OutlinedTextField(
                         value = name,
                         onValueChange = { name = it },
-                        label = { Text("Song Title") },
+                        label = { Text(stringResource(R.string.song_title)) },
                         modifier = Modifier.fillMaxWidth(),
                         textStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
                     )
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        OutlinedTextField(value = folder, onValueChange = { folder = it }, label = { Text("Artist / Folder") }, modifier = Modifier.weight(1f))
-                        OutlinedTextField(value = author, onValueChange = { author = it }, label = { Text("Composer") }, modifier = Modifier.weight(1f))
+                        OutlinedTextField(value = folder, onValueChange = { folder = it }, label = { Text(stringResource(R.string.artist_folder)) }, modifier = Modifier.weight(1f))
+                        OutlinedTextField(value = author, onValueChange = { author = it }, label = { Text(stringResource(R.string.composer)) }, modifier = Modifier.weight(1f))
                     }
                 }
             }
 
             // Section 2: Musical Properties (Horizontal Row for efficiency)
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(value = tone, onValueChange = { tone = it }, label = { Text("Tone") }, modifier = Modifier.weight(1f))
-                OutlinedTextField(value = tempo, onValueChange = { tempo = it }, label = { Text("BPM/Tempo") }, modifier = Modifier.weight(1f))
-                OutlinedTextField(value = rhythm, onValueChange = { rhythm = it }, label = { Text("Rhythm") }, modifier = Modifier.weight(1f))
+                OutlinedTextField(value = tone, onValueChange = { tone = it }, label = { Text(stringResource(R.string.tone)) }, modifier = Modifier.weight(1f))
+                OutlinedTextField(value = tempo, onValueChange = { tempo = it }, label = { Text(stringResource(R.string.bpm_tempo)) }, modifier = Modifier.weight(1f))
+                OutlinedTextField(value = rhythm, onValueChange = { rhythm = it }, label = { Text(stringResource(R.string.rhythm)) }, modifier = Modifier.weight(1f))
             }
 
             // Section 3: Content (Lyrics & Chords) - HIGH PRIORITY
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-                    Text("Lyrics & Chords", style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+                    Text(stringResource(R.string.lyrics_chords), style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
                     TextButton(onClick = {
                         val unique = ChordTransposer.getUniqueChords(content)
                         chords = unique.joinToString(" ")
@@ -120,22 +122,22 @@ fun SongEditScreen(
                     }) {
                         Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(16.dp))
                         Spacer(Modifier.width(4.dp))
-                        Text("Extract Chords")
+                        Text(stringResource(R.string.extract_chords))
                     }
                 }
 
                 OutlinedTextField(
                     value = chords,
                     onValueChange = { chords = it },
-                    label = { Text("Chord Progression") },
+                    label = { Text(stringResource(R.string.chord_progression)) },
                     modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text("G D Em C...") }
+                    placeholder = { Text(stringResource(R.string.chord_progression_placeholder)) }
                 )
 
                 OutlinedTextField(
                     value = content,
                     onValueChange = { content = it },
-                    label = { Text("Lyrics with [Chords]") },
+                    label = { Text(stringResource(R.string.lyrics_with_chords)) },
                     modifier = Modifier.fillMaxWidth().heightIn(min = 200.dp),
                     minLines = 8
                 )
@@ -143,13 +145,13 @@ fun SongEditScreen(
 
             // Section 4: Tablature
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("Tablature", style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.tablature), style = MaterialTheme.typography.titleMedium)
                 OutlinedTextField(
                     value = tab,
                     onValueChange = { tab = it },
                     modifier = Modifier.fillMaxWidth().heightIn(min = 120.dp),
                     textStyle = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
-                    placeholder = { Text("e|---...\nB|---...") }
+                    placeholder = { Text(stringResource(R.string.tab_placeholder)) }
                 )
             }
 
@@ -164,8 +166,8 @@ fun SongEditScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("Advanced Details & Links", style = MaterialTheme.typography.titleSmall)
-                        Text("URLs, Structure, Harmony...", style = MaterialTheme.typography.bodySmall)
+                        Text(stringResource(R.string.advanced_details_links), style = MaterialTheme.typography.titleSmall)
+                        Text(stringResource(R.string.advanced_details_summary), style = MaterialTheme.typography.bodySmall)
                     }
                     Icon(if (expandedAdvanced) Icons.Default.ExpandLess else Icons.Default.ExpandMore, contentDescription = null)
                 }
@@ -177,18 +179,18 @@ fun SongEditScreen(
                 exit = shrinkVertically()
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text("Metadata", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
-                    OutlinedTextField(value = structure, onValueChange = { structure = it }, label = { Text("Structure (Intro, Verse... )") }, modifier = Modifier.fillMaxWidth())
-                    OutlinedTextField(value = harmony, onValueChange = { harmony = it }, label = { Text("Harmony Details") }, modifier = Modifier.fillMaxWidth())
-                    OutlinedTextField(value = melody, onValueChange = { melody = it }, label = { Text("Melody Notes") }, modifier = Modifier.fillMaxWidth())
+                    Text(stringResource(R.string.metadata), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+                    OutlinedTextField(value = structure, onValueChange = { structure = it }, label = { Text(stringResource(R.string.structure_label)) }, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(value = harmony, onValueChange = { harmony = it }, label = { Text(stringResource(R.string.harmony_details)) }, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(value = melody, onValueChange = { melody = it }, label = { Text(stringResource(R.string.melody_notes)) }, modifier = Modifier.fillMaxWidth())
 
                     Spacer(Modifier.height(8.dp))
-                    Text("External Links", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
-                    OutlinedTextField(value = urlsong, onValueChange = { urlsong = it }, label = { Text("Song Stream URL") }, modifier = Modifier.fillMaxWidth())
-                    OutlinedTextField(value = urltutorial, onValueChange = { urltutorial = it }, label = { Text("Tutorial URL") }, modifier = Modifier.fillMaxWidth())
-                    OutlinedTextField(value = urlmidi, onValueChange = { urlmidi = it }, label = { Text("MIDI File URL") }, modifier = Modifier.fillMaxWidth())
-                    OutlinedTextField(value = urlgpt, onValueChange = { urlgpt = it }, label = { Text("AI / Analysis Link") }, modifier = Modifier.fillMaxWidth())
-                    OutlinedTextField(value = urlpartiture, onValueChange = { urlpartiture = it }, label = { Text("Sheet Music / Partiture URL") }, modifier = Modifier.fillMaxWidth())
+                    Text(stringResource(R.string.external_links), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+                    OutlinedTextField(value = urlsong, onValueChange = { urlsong = it }, label = { Text(stringResource(R.string.song_stream_url)) }, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(value = urltutorial, onValueChange = { urltutorial = it }, label = { Text(stringResource(R.string.tutorial_url)) }, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(value = urlmidi, onValueChange = { urlmidi = it }, label = { Text(stringResource(R.string.midi_file_url)) }, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(value = urlgpt, onValueChange = { urlgpt = it }, label = { Text(stringResource(R.string.ai_analysis_link)) }, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(value = urlpartiture, onValueChange = { urlpartiture = it }, label = { Text(stringResource(R.string.sheet_music_url)) }, modifier = Modifier.fillMaxWidth())
                 }
             }
 

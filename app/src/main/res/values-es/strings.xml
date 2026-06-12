@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Chordo</string>
+
+    <plurals name="numberOfSongsAvailable1">
+        <!--
+        val array: Array<String> = resources.getStringArray(R.array.planets_array)
+             As a developer, you should always supply "one" and "other"
+             strings. Your translators will know which strings are actually
+             needed for their language. Always include %d in "one" because
+             translators will need to use %d for languages where "one"
+             doesn\'t mean 1 (as explained above).
+          -->
+        <item quantity="one">%d song found.</item>
+        <item quantity="other">%d songs found.</item>
+    </plurals>
+
+    <plurals name="numberOfSongsAvailable">
+        <item quantity="one">Znaleziono %d piosenkę.</item>
+        <item quantity="few">Znaleziono %d piosenki.</item>
+        <item quantity="other">Znaleziono %d piosenek.</item>
+    </plurals>
+
+    int count = getNumberOfSongsAvailable();
+    Resources res = getResources();
+    String songsFound = res.getQuantityString(R.plurals.numberOfSongsAvailable, count, count);
+
+    <string name="welcome_messages">Hello, %1$s! You have %2$d new messages.</string>
+    String text = getString(R.string.welcome_messages, username, mailCount);
+
+    <string name="welcome">Welcome to <b>Android</b>!</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string-array name="year_array">
+        <item>Año</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
+        <item>30</item>
+    </string-array>
+
+
+    <string-array name="month_array">
+        <item>Mes</item>
+        <item>01</item>
+        <item>02</item>
+        <item>03</item>
+        <item>04</item>
+        <item>05</item>
+        <item>06</item>
+        <item>07</item>
+        <item>08</item>
+        <item>09</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+    </string-array>
+
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+
+    <string name="close">Close</string>
+    <string name="open">Open</string>
+
+    <string name="ok">OK</string>
+
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+
+    <string name="help">Help</string>
+    <string name="register">Register</string>
+
+    <string name="error">Error</string>
+    <string name="confirm">Confirm</string>
+
+    <string name="width">Confirm</string>
+    <string name="height">Confirm</string>
+
+    <string name="connect">Confirm</string>
+    <string name="disconect">Confirm</string>
+
+    <string name="back">Back</string>
+
+    <string name="accept">Accept</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="login">Login</string>
+    <string name="sign_out">Sign out</string>
+
+    <string name="exit">Exit</string>
+
+    <string name="user">User</string>
+
+    <string name="log_in">Log in</string>
+    <string name="log_out">Log out</string>
+
+    <string name="close_session">Close session</string>
+
+    <string name="save">Guardar</string>
+    <string name="finish">Finalizar</string>
+    <string name="delete_song_title">Eliminar Canción</string>
+    <string name="delete_song_confirmation">¿Estás seguro de que deseas eliminar \'%1$s\'?</string>
+    <string name="delete">Eliminar</string>
+    <string name="search_playlists">Buscar listas de reproducción...</string>
+    <string name="search_favorites">Buscar favoritos...</string>
+    <string name="search_songs_artists">Buscar canciones o artistas...</string>
+    <string name="options">Opciones</string>
+    <string name="export_json">Exportar a JSON</string>
+    <string name="import_json">Importar desde JSON</string>
+    <string name="favorites">Favoritos</string>
+    <string name="playlists">Listas de Reproducción</string>
+    <string name="all_songs">Todas las Canciones</string>
+    <string name="all">Todo</string>
+    <string name="library">Biblioteca</string>
+    <string name="tempo">Tempo</string>
+    <string name="tuner">Afinador</string>
+    <string name="tools">Herramientas</string>
+    <string name="add_song">Agregar Canción</string>
+    <string name="no_playlists_found">No se encontraron listas de reproducción</string>
+    <string name="no_favorites_yet">Aún no hay favoritos</string>
+    <string name="no_songs_found">No se encontraron canciones</string>
+    <string name="tab_label">TAB</string>
+
+    <string name="continue_btn">Continuar</string>
+    <string name="permission_description">Para utilizar esta aplicación, primero necesitamos solicitar tu permiso de ubicación. De lo contrario, no podremos brindarte nuestro servicio. Si estás de acuerdo y deseas continuar, toca el botón de abajo.</string>
+    <string name="permission_required">Permiso Requerido</string>
+
+    <string name="permission_location_description">Para utilizar esta aplicación, primero necesitamos solicitar tu permiso de ubicación. De lo contrario, no podremos brindarte nuestro servicio. Si estás de acuerdo y deseas continuar, toca el botón de abajo.</string>
+    <string name="permission_location_required">Permiso de Ubicación</string>
+
+    <string name="permission_activity_description">Para utilizar esta aplicación, primero necesitamos solicitar tu permiso para la actividad física. De lo contrario, no podremos brindarte nuestro servicio. Si estás de acuerdo y deseas continuar, toca el botón de abajo.</string>
+    <string name="permission_activity_required">Permiso de Actividad Física</string>
+
+    <string name="permission_camera_description">Para utilizar esta aplicación, necesitamos solicitar permiso para acceder a la cámara de tu dispositivo. Este permiso es necesario para que puedas tomar fotos o grabar videos dentro de la aplicación. Si estás de acuerdo y deseas continuar, toca el botón de abajo.</string>
+    <string name="permission_camera_required">Permiso de Acceso a la Cámara</string>
+
+    <string name="permission_storage_description">Para utilizar esta aplicación, necesitamos solicitar permiso para escribir en el almacenamiento externo de tu dispositivo. Este permiso es esencial para guardar y administrar archivos dentro de la aplicación. Si estás de acuerdo y deseas continuar, toca el botón de abajo.</string>
+    <string name="permission_storage_required">Permiso de Acceso al Almacenamiento Externo</string>
+
+    <string name="permission_boot_description">Para que esta aplicación funcione correctamente, necesitamos solicitar permiso para recibir notificaciones cuando el dispositivo se reinicie. Esto es necesario para garantizar que la aplicación pueda reanudar sus funciones automáticamente después de un reinicio del sistema. Si estás de acuerdo y deseas continuar, toca el botón de abajo.</string>
+    <string name="permission_boot_required">Permiso para Recibir Notificaciones de Reinicio del Sistema</string>
+
+    <string name="permission_draw_description">Para utilizar esta aplicación, primero necesitamos solicitar permiso para mostrarse sobre otras aplicaciones. De lo contrario, no podremos ofrecer todas las funcionalidades. Si estás de acuerdo y deseas continuar, toca el botón de abajo.</string>
+    <string name="permission_draw_required">Permiso para Mostrarse Sobre Otras Aplicaciones (opcional)</string>
+
+    <string name="permission_recording_description">Para que esta aplicación funcione correctamente, necesitamos habilitar el permiso para grabar audio. Este permiso es necesario para grabar y almacenar audio dentro de la aplicación. Ve a la configuración de la aplicación y habilita el permiso para continuar.</string>
+    <string name="permission_recording_required">Permiso para Grabar Audio</string>
+
+    <string name="permission_phone_description">Para que esta aplicación funcione correctamente, necesitamos habilitar el permiso para acceder a las llamadas telefónicas. Este permiso es necesario para gestionar y realizar llamadas desde la aplicación. Ve a la configuración de la aplicación y habilita el permiso para continuar.</string>
+    <string name="permission_phone_required">Permiso de Acceso a Llamadas Telefónicas</string>
+
+    <string name="permission_sms_description">Para que esta aplicación funcione correctamente, necesitamos habilitar el permiso para leer y enviar mensajes SMS. Este permiso es esencial para gestionar mensajes dentro de la aplicación. Ve a la configuración de la aplicación y habilita el permiso para continuar.</string>
+    <string name="permission_sms_required">Permiso para Leer y Enviar SMS</string>
+
+    <string name="permission_notification_description">Para utilizar esta aplicación de manera efectiva, necesitamos tu permiso para enviarte notificaciones. Sin este permiso, podrías perder actualizaciones y alertas importantes. Si estás de acuerdo, toca el botón de abajo para continuar.</string>
+    <string name="permission_notification_required">Permiso de Notificaciones</string>
+
+    <string name="turn_on_flashlight">Encender linterna</string>
+    <string name="battery_low">Batería Baja</string>
+    <string name="battery_low_message">La batería está demasiado baja para que NFC funcione. Por favor, carga tu dispositivo para usar NFC.</string>
+    <string name="face_detection_message">Por favor, asegúrate de que tu rostro esté centrado en la cámara. Espera a que sea detectado antes de proceder con el registro.</string>
+    <string name="qr_scanner_state">Escáner QR</string>
+    <string name="score">Puntuación</string>
+
+    <string name="chord_finder">Buscador de Acordes</string>
+    <string name="chord_placeholder">Ingresa un acorde (ej. C, Am, G7)</string>
+    <string name="search_content_description">Buscar</string>
+    <string name="chord_variations_title">Variaciones para %1$s</string>
+    <string name="no_variations_found">No se encontraron variaciones para \'%1$s\'</string>
+
+    <string name="onboarding_title_1">Bienvenido a Chordo</string>
+    <string name="onboarding_desc_1">Tu compañero definitivo para gestionar acordes y letras de canciones.</string>
+
+    <string name="onboarding_title_2">Transponer y Editar</string>
+    <string name="onboarding_desc_2">Transpone fácilmente tus canciones favoritas a cualquier tonalidad y edítalas al instante.</string>
+
+    <string name="onboarding_title_3">Afinador y Metrónomo</string>
+    <string name="onboarding_desc_3">Mantente afinado y a tiempo con nuestras herramientas musicales integradas.</string>
+
+    <string name="skip">Omitir</string>
+    <string name="next">Siguiente</string>
+
+    <string name="permission_audio_title">Permiso de Audio</string>
+    <string name="permission_audio_desc">Chordo necesita permiso de audio para utilizar la función de Afinador. Por favor, concede el permiso para continuar.</string>
+
+    <string name="grant_permission">Conceder Permiso</string>
+    <string name="continue_without_tuner">Continuar sin Afinador</string>
+    <!-- SongEditScreen Strings -->
+    <string name="new_song">Nueva Canción</string>
+    <string name="edit_song">Editar Canción</string>
+    <string name="basic_info">Información Básica</string>
+    <string name="song_title">Título de la Canción</string>
+    <string name="artist_folder">Artista / Carpeta</string>
+    <string name="composer">Compositor</string>
+    <string name="tone">Tonalidad</string>
+    <string name="bpm_tempo">BPM/Tempo</string>
+    <string name="rhythm">Ritmo</string>
+    <string name="lyrics_chords">Letra y Acordes</string>
+    <string name="extract_chords">Extraer Acordes</string>
+    <string name="chord_progression">Progresión de Acordes</string>
+    <string name="chord_progression_placeholder">G D Em C...</string>
+    <string name="lyrics_with_chords">Letra con [Acordes]</string>
+    <string name="tablature">Tablatura</string>
+    <string name="tab_placeholder">e|---...\nB|---...</string>
+    <string name="advanced_details_links">Detalles Avanzados y Enlaces</string>
+    <string name="advanced_details_summary">URLs, Estructura, Armonía...</string>
+    <string name="metadata">Metadatos</string>
+    <string name="structure_label">Estructura (Intro, Verso...)</string>
+    <string name="harmony_details">Detalles de Armonía</string>
+    <string name="melody_notes">Notas de la Melodía</string>
+    <string name="external_links">Enlaces Externos</string>
+    <string name="song_stream_url">URL de Reproducción</string>
+    <string name="tutorial_url">URL del Tutorial</string>
+    <string name="midi_file_url">URL del Archivo MIDI</string>
+    <string name="ai_analysis_link">Enlace de IA / Análisis</string>
+    <string name="sheet_music_url">URL de Partitura</string>
+
+    <!-- LyricsScreen Strings -->
+    <string name="back_button">Atrás</string>
+    <string name="settings">Configuración</string>
+    <string name="favorite">Favorito</string>
+    <string name="auto_scroll">Desplazamiento Automático</string>
+    <string name="tone_label">Tonalidad</string>
+    <string name="bpm_label">%1$d BPM</string>
+    <string name="tablature_label">TABLATURA</string>
+    <string name="display_settings">Configuración de Visualización</string>
+    <string name="show_chords">Mostrar Acordes</string>
+    <string name="latin_notation">Notación Latina (DO, RE, MI)</string>
+    <string name="auto_scroll_speed">Velocidad de Desplazamiento</string>
+    <string name="add_to_playlist">Agregar a Lista de Reproducción</string>
+    <string name="create_new_playlist">Crear Nueva Lista</string>
+    <string name="new_playlist">Nueva Lista de Reproducción</string>
+    <string name="playlist_name">Nombre de la Lista</string>
+    <string name="create">Crear</string>
+    <string name="metronome">Metrónomo</string>
+    <string name="bpm_display">%1$d</string>
+    <string name="bpm_unit">BPM</string>
+    <string name="done">Listo</string>
+
+    <!-- TunerApp Strings -->
+    <string name="tuner_title">Afinador de Guitarra</string>
+    <string name="waiting_for_input">Esperando entrada...</string>
+    <string name="tune_each_string">Afina cada cuerda</string>
+    <string name="stop_listening">Detener Escucha</string>
+    <string name="start_tuner">Iniciar Afinador</string>
+    <string name="status_tap_start">Toca Iniciar para comenzar a afinar</string>
+    <string name="status_playing">Reproduciendo una cuerda...</string>
+    <string name="status_in_tune">✓ ¡Afinada!</string>
+    <string name="status_flat">♭ Grave - Sube la afinación</string>
+    <string name="status_sharp">♯ Aguda - Baja la afinación</string>
+    <string name="tuning_meter">Medidor de Afinación</string>
+    <string name="permission_required_title">Se Requiere Permiso del Micrófono</string>
+    <string name="permission_required_desc">Concede permiso al micrófono para usar el afinador</string>
+    <string name="string_name_format">Cuerda %1$s%2$d</string>
+    <string name="frequency_hz_format">%1$.1f Hz</string>
+    <string name="cents_offset_format">%1$d cents %2$s</string>
+
+    <!-- TempoApp Strings -->
+    <string name="tap_button">TAP</string>
+    <string name="reset_button">Reiniciar</string>
+    <string name="stop_metronome">Detener Metrónomo</string>
+    <string name="start_metronome">Iniciar Metrónomo</string>
+
+    <string name="title_file_download">Downloading File</string>
+    <string name="downloading_file">Downloading in progress…</string>
+    <string name="download_completed">Download completed successfully</string>
+    <string name="registration">Registration</string>
+    <string name="enter_name">Enter Name</string>
+</resources>

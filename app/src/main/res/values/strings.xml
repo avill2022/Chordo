@@ -1,16 +1,6 @@
 <resources>
     <string name="app_name">Chordo</string>
 
-
-    <string-array name="planets_array">
-        <item>Mercury</item>
-        <item>Venus</item>
-        <item>Earth</item>
-        <item>Mars</item>
-    </string-array>
-
-
-
     <plurals name="numberOfSongsAvailable1">
         <!--
         val array: Array<String> = resources.getStringArray(R.array.planets_array)
@@ -37,38 +27,7 @@
     <string name="welcome_messages">Hello, %1$s! You have %2$d new messages.</string>
     String text = getString(R.string.welcome_messages, username, mailCount);
 
-
-
-        <string name="welcome">Welcome to <b>Android</b>!</string>
-<!--
-    Negrita: <b>
-    Cursiva: <i>, <cite>, <dfn>, <em>
-    Texto 25% más grande: <big>
-    Texto 20% más pequeño: <small>
-    Configurar propiedades de la fuente: <font face=”font_family“ color=”hex_color”>. Algunas familias de fuentes posibles son monospace, serif y sans_serif.
-    Configurar una familia de fuentes monoespacio: <tt>
-    Tachado: <s>, <strike>, <del>
-    Subrayado: <u>
-    Superíndice: <sup>
-    Subíndice: <sub>
-    Viñetas: <ul>, <li>
-    Saltos de línea: <br>
-    División: <div>
-    Estilo CSS: <span style=”color|background_color|text-decoration”>
--->
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <string name="welcome">Welcome to <b>Android</b>!</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string-array name="year_array">
@@ -147,103 +106,28 @@
 
     <string name="save">Save</string>
     <string name="finish">Finish</string>
-
-
-
-    <string name="home">Home</string>
-    <string name="lastName">Last name</string>
-    <string name="curp">CURP</string>
-
-    <string name="name">Name</string>
-    <string name="last_name_s">Last name: %s</string>
-    <string name="email">Email</string>
-
-    <string name="password">Password</string>
-    <string name="profile_photo">Profile photo</string>
-    <string name="profile_user">Profile user</string>
-    <string name="profile_name">Profile name</string>
-    <string name="profile_last_name">Profile last name</string>
-    <string name="profile_middle_name">Middle name</string>
-    <string name="profile_phone">Profile phone</string>
-    <string name="profile_email">Profile email</string>
-
-    <string name="customer">Customer</string>
-    <string name="complete_the_files">Complete the fields</string>
-    <string name="alert">Alert</string>
-    <string name="menu_home">Home</string>
-    <string name="invalid_email">Invalid email</string>
-    <string name="month">Month</string>
-    <string name="year">Year</string>
-    <string name="info">Information</string>
-    <string name="button_save">Save</string>
-    <string name="contact">contact@suvabus.com</string>
-    <string name="date_example">Exp. 15 Dec. 24</string>
-    <string name="current_password">Current password</string>
-    <string name="new_password">New password</string>
-    <string name="confirm_password">Confirm password</string>
-    <string name="show_password">Show passwords</string>
-    <string name="text_clave">CURP:</string>
-    <string name="text_name">Name:</string>
-    <string name="text_email">Email:</string>
-    <string name="text_folio">Folio:</string>
-    <string name="text_type_card">Card type</string>
-    <string name="search">Search</string>
-    <string name="send">Send</string>
-    <string name="no_card">Card number</string>
-
-
-    <string name="balance_checker">Check balance</string>
-    <string name="balance_recharger">Recharge card</string>
-    <string name="mother_last_name">Mother\'s last name</string>
-    <string name="restarting_services">Restarting services</string>
-    <string name="error_restarting_services">Error restarting services</string>
-    <string name="wait_a_moment_please">Please wait a moment</string>
-    <string name="impossible_to_start_the_device">Unable to start the device</string>
-    <string name="apply_recharges">Apply recharges</string>
-    <string name="present_card_again">Present the card again</string>
-    <string name="there_is_not_card">There is no card</string>
-    <string name="do_not_remove_the_card_from_the_reader">Do not remove the card from the reader</string>
-    <string name="pin_enter">Enter PIN</string>
-    <string name="fix_card">Fix card</string>
-    <string name="delete_card">Delete card</string>
-    <string name="invalid_balance">Invalid balance, please recharge the card</string>
-    <string name="damaged_card">DAMAGED CARD</string>
-    <string name="enter_with_card">Enter with card</string>
-    <string name="loading_moves">Loading movements</string>
-    <string name="id_client">Client ID</string>
-    <string name="title_activity_my_frame_tool">MyFrameToolActivity</string>
-    <string name="error_search">SEARCH_ERROR</string>
-    <string name="ultralight_test">UltraLight Test</string>
-    <string name="loading_card_types">Loading card types</string>
-    <string name="the_device_does_not_support_android_standard_nfc">The device does not support Android standard NFC</string>
-    <string name="open_the_nfc_switch">Go to settings and turn on the NFC switch</string>
-    <string name="please_swipe_your_card">Please swipe your card</string>
-    <string name="not_nfc">The device does not support Android standard NFC</string>
-
-
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
-    <string name="app_widget_description">This is an app widget description</string>
-    <string name="map_key">AIzaSyBSmhzaQzy3EkEmPsa54oO5JBKrLjDzAaw</string>
-    <string name="notification_channel_name">notification channe</string>
-    <string name="notification_channel_description">notification_channel_description</string>
-    <string name="title_file_download">Downloading File</string>
-    <string name="downloading_file">Downloading in progress…</string>
-    <string name="download_completed">Download completed successfully</string>
-    <string name="registration">Registration</string>
-    <string name="enter_name">Enter Name</string>
-
-    <string name="face_register_ok">Face Registered Successfully</string>
-    <string name="location_permissions">You will not be able to use the app without location permissions</string>
-    <string name="enable_location_permissions"><![CDATA[To enable permissions go to permissions->Location->Allow]]></string>
-    <string name="please_wait">Please wait…</string>
-    <string name="preparing_to_download">Preparing the transaction…</string>
-
-    <string name="progress_msg">Please wait…</string>
-
-    <string name="recover_password">Recover password</string>
-    <string name="register_device">Register device</string>
+    <string name="delete_song_title">Delete Song</string>
+    <string name="delete_song_confirmation">Are you sure you want to delete \'%1$s\'?</string>
+    <string name="delete">Delete</string>
+    <string name="search_playlists">Search playlists...</string>
+    <string name="search_favorites">Search favorites...</string>
+    <string name="search_songs_artists">Search songs or artists...</string>
+    <string name="options">Options</string>
+    <string name="export_json">Export to JSON</string>
+    <string name="import_json">Import from JSON</string>
+    <string name="favorites">Favorites</string>
+    <string name="playlists">Playlists</string>
+    <string name="all_songs">All Songs</string>
+    <string name="all">All</string>
+    <string name="library">Library</string>
+    <string name="tempo">Tempo</string>
+    <string name="tuner">Tuner</string>
+    <string name="tools">Tools</string>
+    <string name="add_song">Add Song</string>
+    <string name="no_playlists_found">No playlists found</string>
+    <string name="no_favorites_yet">No favorites yet</string>
+    <string name="no_songs_found">No songs found</string>
+    <string name="tab_label">TAB</string>
 
     <string name="continue_btn">Continue</string>
     <string name="permission_description">In order to use this application we will first need to request location permission from you. Otherwise we will not be able to provide you with our service. If you agree and wish to continue tap on the button below.</string>
@@ -287,16 +171,113 @@
     <string name="score">Score</string>
 
     <!--ADD MOB-->
-    <string name="app_test_id_add" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
-    <string name="app_id_add" />
 
+    <string name="chord_finder">Chord Finder</string>
+    <string name="chord_placeholder">Enter chord (e.g., C, Am, G7)</string>
+    <string name="search_content_description">Search</string>
+    <string name="chord_variations_title">Variations for %1$s</string>
+    <string name="no_variations_found">No variations found for \'%1$s\'</string>
+    <string name="onboarding_title_1">Welcome to Chordo</string>
+    <string name="onboarding_desc_1">Your ultimate companion for managing chords and lyrics.</string>
+    <string name="onboarding_title_2">Transpose and Edit</string>
+    <string name="onboarding_desc_2">Easily transpose your favorite songs to any key and edit them on the fly.</string>
+    <string name="onboarding_title_3">Tuner and Metronome</string>
+    <string name="onboarding_desc_3">Stay in tune and on beat with our built-in musical tools.</string>
+    <string name="skip">Skip</string>
+    <string name="next">Next</string>
+    <string name="permission_audio_title">Audio Permission</string>
+    <string name="permission_audio_desc">Chordo needs audio permission to use the Tuner feature. Please grant the permission to continue.</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="continue_without_tuner">Continue without Tuner</string>
+
+    <!-- SongEditScreen Strings -->
+    <string name="new_song">New Song</string>
+    <string name="edit_song">Edit Song</string>
+    <string name="basic_info">Basic Info</string>
+    <string name="song_title">Song Title</string>
+    <string name="artist_folder">Artist / Folder</string>
+    <string name="composer">Composer</string>
+    <string name="tone">Tone</string>
+    <string name="bpm_tempo">BPM/Tempo</string>
+    <string name="rhythm">Rhythm</string>
+    <string name="lyrics_chords">Lyrics &amp; Chords</string>
+    <string name="extract_chords">Extract Chords</string>
+    <string name="chord_progression">Chord Progression</string>
+    <string name="chord_progression_placeholder">G D Em C...</string>
+    <string name="lyrics_with_chords">Lyrics with [Chords]</string>
+    <string name="tablature">Tablature</string>
+    <string name="tab_placeholder">e|---...\nB|---...</string>
+    <string name="advanced_details_links">Advanced Details &amp; Links</string>
+    <string name="advanced_details_summary">URLs, Structure, Harmony...</string>
+    <string name="metadata">Metadata</string>
+    <string name="structure_label">Structure (Intro, Verse... )</string>
+    <string name="harmony_details">Harmony Details</string>
+    <string name="melody_notes">Melody Notes</string>
+    <string name="external_links">External Links</string>
+    <string name="song_stream_url">Song Stream URL</string>
+    <string name="tutorial_url">Tutorial URL</string>
+    <string name="midi_file_url">MIDI File URL</string>
+    <string name="ai_analysis_link">AI / Analysis Link</string>
+    <string name="sheet_music_url">Sheet Music / Partiture URL</string>
+
+    <!-- LyricsScreen Strings -->
+    <string name="back_button">Back</string>
+    <string name="settings">Settings</string>
+    <string name="favorite">Favorite</string>
+    <string name="auto_scroll">Auto Scroll</string>
+    <string name="tone_label">Tone</string>
+    <string name="bpm_label">%1$d BPM</string>
+    <string name="tablature_label">TABLATURE</string>
+    <string name="display_settings">Display Settings</string>
+    <string name="show_chords">Show Chords</string>
+    <string name="latin_notation">Latin Notation (DO, RE, MI)</string>
+    <string name="auto_scroll_speed">Auto-scroll Speed</string>
+    <string name="add_to_playlist">Add to Playlist</string>
+    <string name="create_new_playlist">Create New Playlist</string>
+    <string name="new_playlist">New Playlist</string>
+    <string name="playlist_name">Playlist Name</string>
+    <string name="create">Create</string>
+    <string name="metronome">Metronome</string>
+    <string name="bpm_display">%1$d</string>
+    <string name="bpm_unit">BPM</string>
+    <string name="done">Done</string>
+
+    <!-- TunerApp Strings -->
+    <string name="tuner_title">Guitar Tuner</string>
+    <string name="waiting_for_input">Waiting for input...</string>
+    <string name="tune_each_string">Tune each string</string>
+    <string name="stop_listening">Stop Listening</string>
+    <string name="start_tuner">Start Tuner</string>
+    <string name="status_tap_start">Tap Start to begin tuning</string>
+    <string name="status_playing">Playing a string...</string>
+    <string name="status_in_tune">✓ In tune!</string>
+    <string name="status_flat">♭ Flat - Tune up</string>
+    <string name="status_sharp">♯ Sharp - Tune down</string>
+    <string name="tuning_meter">Tuning Meter</string>
+    <string name="permission_required_title">Microphone Permission Required</string>
+    <string name="permission_required_desc">Please grant microphone permission to use the tuner</string>
+    <string name="string_name_format">%1$s%2$d String</string>
+    <string name="frequency_hz_format">%1$.1f Hz</string>
+    <string name="cents_offset_format">%1$d cents %2$s</string>
+
+    <!-- TempoApp Strings -->
+    <string name="tap_button">TAP</string>
+    <string name="reset_button">Reset</string>
+    <string name="stop_metronome">Stop Metronome</string>
+    <string name="start_metronome">Start Metronome</string>
+
+
+
+
+    <string name="title_file_download">Downloading File</string>
+    <string name="downloading_file">Downloading in progress…</string>
+    <string name="download_completed">Download completed successfully</string>
+    <string name="registration">Registration</string>
+    <string name="enter_name">Enter Name</string>
+
+    <string name="app_test_id_add" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
     <string name="banner_test_id_add" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
     <string name="banner_id_add" translatable="false"> </string>
-
     <string name="interstitial_test_id_add" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
-
     <string name="rewardedInterstitial_test_id_add" translatable="false">ca-app-pub-3940256099942544/5354046379</string>
-    <!--GEO APY KEY-->
-    <string name="geo_api_key">AIzaSyB8T17nR7sWzWJ9v0lQE9Chp7SUxUlGoCc</string>
-    <string name="title_activity_main2">MainActivity2</string>
 </resources>

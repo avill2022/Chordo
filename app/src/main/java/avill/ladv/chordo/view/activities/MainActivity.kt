@@ -35,6 +35,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import avill.ladv.chordo.apps.app.ChordoApp
 import avill.ladv.chordo.apps.app.ChordoViewModel
+import avill.ladv.chordo.apps.app.MainViewModel
 import avill.ladv.chordo.apps.app.TempoViewModel
 import avill.ladv.chordo.apps.app.TunerApp
 import avill.ladv.chordo.apps.app.helpers.AudioHelper
@@ -47,14 +48,17 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val mainViewModel: MainViewModel by viewModels()
     val chordoViewModel: ChordoViewModel by viewModels()
-    val tempoViewModel:TempoViewModel by viewModels()
+    val tempoViewModel: TempoViewModel by viewModels()
     lateinit var audioHelper: AudioHelper
+
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        // Handle permission result
+        mainViewModel.updatePermissionStatus(isGranted)
     }
+
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("ViewModelConstructorInComposable")
     @OptIn(
@@ -65,17 +69,27 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val splashScreen = installSplashScreen()
-        //splashScreen.setKeepOnScreenCondition{true}
+        splashScreen.setKeepOnScreenCondition { true }
+        
         CoroutineScope(Dispatchers.Main).launch {
-
+            splashScreen.setKeepOnScreenCondition { false }
         }
-        requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
         audioHelper = AudioHelper(this@MainActivity)
+        // Check initial permission status
+        val isPermissionGranted = checkSelfPermission(Manifest.permission.RECORD_AUDIO) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        mainViewModel.updatePermissionStatus(isPermissionGranted)
+
         setContent {
             AppNameTheme {
-                //TunerApp()
-                //TempoApp(tempVIewMOdel)
-                ChordoApp(chordoViewModel, tempoViewModel, audioHelper)
+                ChordoApp(
+                    mainViewModel = mainViewModel,
+                    viewModel = chordoViewModel,
+                    tempoViewModel = tempoViewModel,
+                    audioHelper = audioHelper,
+                    onRequestPermission = {
+                        requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                    }
+                )
             }
         }
     }

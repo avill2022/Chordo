@@ -16,19 +16,7 @@ import avill.ladv.chordo.R
 object MyNotificationsManager {
     private const val CHANNEL_ID = "455"
 
-    fun createNotificationChannel(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = context.getString(R.string.notification_channel_name)
-            val descriptionText = context.getString(R.string.notification_channel_description)
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-                description = descriptionText
-            }
-            val notificationManager: NotificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
-    }
+
 
     fun basicTextNotificationAction(context: Context) {
         val intent = Intent(context, MyNotificationsManager::class.java).apply {

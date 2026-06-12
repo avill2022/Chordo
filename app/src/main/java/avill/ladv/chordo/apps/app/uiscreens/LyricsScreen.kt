@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
@@ -24,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import avill.ladv.chordo.R
 import avill.ladv.chordo.apps.app.MetronomeTick
 import avill.ladv.chordo.apps.app.TempoViewModel
 import avill.ladv.chordo.apps.app.helpers.AudioHelper
@@ -100,17 +102,17 @@ fun LyricsScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.Rounded.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.Rounded.ArrowBack, contentDescription = stringResource(R.string.back_button))
                     }
                 },
                 actions = {
                     IconButton(onClick = { showSettingsSheet = true }) {
-                        Icon(Icons.Rounded.Settings, contentDescription = "Settings")
+                        Icon(Icons.Rounded.Settings, contentDescription = stringResource(R.string.settings))
                     }
                     IconButton(onClick = onFavoriteClick) {
                         Icon(
                             imageVector = if (isFavorite) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
-                            contentDescription = "Favorite",
+                            contentDescription = stringResource(R.string.favorite),
                             tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                         )
                     }
@@ -127,7 +129,7 @@ fun LyricsScreen(
             ) {
                 Icon(
                     imageVector = if (isAutoScrolling) Icons.Rounded.Stop else Icons.Rounded.PlayArrow,
-                    contentDescription = "Auto Scroll"
+                    contentDescription = stringResource(R.string.auto_scroll)
                 )
             }
         }
@@ -147,9 +149,9 @@ fun LyricsScreen(
                     ) {
                         // Transpose group
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("Tone", style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(end = 8.dp))
+                            Text(stringResource(R.string.tone_label), style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(end = 8.dp))
                             FilledTonalIconButton(onClick = { onTranspose(-1) }, modifier = Modifier.size(36.dp)) {
-                                Icon(Icons.Rounded.Remove, contentDescription = "Down", modifier = Modifier.size(18.dp))
+                                Icon(Icons.Rounded.Remove, contentDescription = null, modifier = Modifier.size(18.dp))
                             }
                             Text(
                                 song.tone.ifEmpty { "C" },
@@ -158,7 +160,7 @@ fun LyricsScreen(
                                 fontWeight = FontWeight.Bold
                             )
                             FilledTonalIconButton(onClick = { onTranspose(1) }, modifier = Modifier.size(36.dp)) {
-                                Icon(Icons.Rounded.Add, contentDescription = "Up", modifier = Modifier.size(18.dp))
+                                Icon(Icons.Rounded.Add, contentDescription = null, modifier = Modifier.size(18.dp))
                             }
                         }
 
@@ -168,7 +170,7 @@ fun LyricsScreen(
                         TextButton(onClick = { showTempoDialog = true }) {
                             Icon(Icons.Rounded.Speed, contentDescription = null, modifier = Modifier.size(18.dp))
                             Spacer(Modifier.width(4.dp))
-                            Text("$bpm BPM")
+                            Text(stringResource(R.string.bpm_label, bpm))
                         }
                     }
                 }
@@ -267,7 +269,7 @@ fun LyricsScreen(
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
                     ) {
                         Column(modifier = Modifier.padding(8.dp)) {
-                            Text("TABLATURE", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+                            Text(stringResource(R.string.tablature_label), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
                             Box(modifier = Modifier.horizontalScroll(rememberScrollState()).verticalScroll(rememberScrollState())) {
                                 Text(
                                     text = song.tab,
@@ -330,7 +332,7 @@ fun LyricsScreen(
     if (showPlaylistDialog) {
         AlertDialog(
             onDismissRequest = { showPlaylistDialog = false },
-            title = { Text("Add to Playlist") },
+            title = { Text(stringResource(R.string.add_to_playlist)) },
             text = {
                 Column {
                     playlists.forEach { playlist ->
@@ -352,13 +354,13 @@ fun LyricsScreen(
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Create New Playlist")
+                        Text(stringResource(R.string.create_new_playlist))
                     }
                 }
             },
             confirmButton = {
                 TextButton(onClick = { showPlaylistDialog = false }) {
-                    Text("Close")
+                    Text(stringResource(R.string.close))
                 }
             }
         )
@@ -368,12 +370,12 @@ fun LyricsScreen(
         var newPlaylistName by remember { mutableStateOf("") }
         AlertDialog(
             onDismissRequest = { showCreatePlaylistDialog = false },
-            title = { Text("New Playlist") },
+            title = { Text(stringResource(R.string.new_playlist)) },
             text = {
                 OutlinedTextField(
                     value = newPlaylistName,
                     onValueChange = { newPlaylistName = it },
-                    label = { Text("Playlist Name") }
+                    label = { Text(stringResource(R.string.playlist_name)) }
                 )
             },
             confirmButton = {
@@ -386,12 +388,12 @@ fun LyricsScreen(
                         }
                     }
                 ) {
-                    Text("Create")
+                    Text(stringResource(R.string.create))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showCreatePlaylistDialog = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -440,20 +442,20 @@ fun SettingsContent(
     onAddToPlaylistClick: () -> Unit
 ) {
     Column(modifier = Modifier.padding(horizontal = 24.dp).padding(bottom = 48.dp)) {
-        Text("Display Settings", style = MaterialTheme.typography.titleLarge)
+        Text(stringResource(R.string.display_settings), style = MaterialTheme.typography.titleLarge)
         Spacer(Modifier.height(16.dp))
 
         ListItem(
-            headlineContent = { Text("Show Chords") },
+            headlineContent = { Text(stringResource(R.string.show_chords)) },
             trailingContent = { Switch(checked = !isChordsRemoved, onCheckedChange = { onChordsToggled(!it) }) }
         )
         ListItem(
-            headlineContent = { Text("Latin Notation (DO, RE, MI)") },
+            headlineContent = { Text(stringResource(R.string.latin_notation)) },
             trailingContent = { Switch(checked = isLatin, onCheckedChange = onNotationToggled) }
         )
 
         Spacer(Modifier.height(8.dp))
-        Text("Auto-scroll Speed", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+        Text(stringResource(R.string.auto_scroll_speed), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
         Slider(
             value = scrollSpeed.toFloat(),
             onValueChange = { onSpeedChanged(it.toInt()) },
@@ -466,12 +468,12 @@ fun SettingsContent(
             Button(onClick = onEditClick, modifier = Modifier.weight(1f)) {
                 Icon(Icons.Rounded.Edit, null)
                 Spacer(Modifier.width(8.dp))
-                Text("Edit Song")
+                Text(stringResource(R.string.edit_song))
             }
             OutlinedButton(onClick = onAddToPlaylistClick, modifier = Modifier.weight(1f)) {
                 Icon(Icons.Rounded.PlaylistAdd, null)
                 Spacer(Modifier.width(8.dp))
-                Text("Playlist")
+                Text(stringResource(R.string.playlists))
             }
         }
     }
@@ -487,12 +489,12 @@ fun TempoDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Done") } },
-        title = { Text("Metronome") },
+        confirmButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.done)) } },
+        title = { Text(stringResource(R.string.metronome)) },
         text = {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("$bpm", style = MaterialTheme.typography.displayLarge, fontWeight = FontWeight.Bold)
-                Text("BPM", style = MaterialTheme.typography.labelMedium)
+                Text(stringResource(R.string.bpm_display, bpm), style = MaterialTheme.typography.displayLarge, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.bpm_unit), style = MaterialTheme.typography.labelMedium)
                 Slider(
                     value = bpm.toFloat(),
                     onValueChange = { onBpmChange(it.toInt()) },
@@ -508,7 +510,7 @@ fun TempoDialog(
                 ) {
                     Icon(if (isPlaying) Icons.Rounded.Stop else Icons.Rounded.PlayArrow, null)
                     Spacer(Modifier.width(8.dp))
-                    Text(if (isPlaying) "Stop" else "Start")
+                    Text(if (isPlaying) stringResource(R.string.stop) else stringResource(R.string.start))
                 }
             }
         }

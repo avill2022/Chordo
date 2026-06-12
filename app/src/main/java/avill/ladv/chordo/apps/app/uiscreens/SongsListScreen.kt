@@ -17,6 +17,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import avill.ladv.chordo.R
 import avill.ladv.chordo.apps.app.TempoApp
 import avill.ladv.chordo.apps.app.TempoViewModel
 import avill.ladv.chordo.apps.app.TunerApp
@@ -44,26 +46,28 @@ fun SongsListScreen(
     selectedTab: Int,
     onTabSelected: (Int) -> Unit,
     tempoViewModel: TempoViewModel,
-    audioHelper: AudioHelper
+    audioHelper: AudioHelper,
+    isAudioPermissionGranted: Boolean,
+    onRequestPermission: () -> Unit
 ) {
     var songToDelete by remember { mutableStateOf<Song?>(null) }
 
     if (songToDelete != null) {
         AlertDialog(
             onDismissRequest = { songToDelete = null },
-            title = { Text("Delete Song") },
-            text = { Text("Are you sure you want to delete '${songToDelete?.name}'?") },
+            title = { Text(stringResource(R.string.delete_song_title)) },
+            text = { Text(stringResource(R.string.delete_song_confirmation, songToDelete?.name ?: "")) },
             confirmButton = {
                 TextButton(onClick = {
                     songToDelete?.let { onDeleteSong(it) }
                     songToDelete = null
                 }) {
-                    Text("Delete", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.delete), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { songToDelete = null }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -86,9 +90,9 @@ fun SongsListScreen(
                             placeholder = { 
                                 Text(
                                     when (selectedTab) {
-                                        2 -> "Search playlists..."
-                                        1 -> "Search favorites..."
-                                        else -> "Search songs or artists..."
+                                        2 -> stringResource(R.string.search_playlists)
+                                        1 -> stringResource(R.string.search_favorites)
+                                        else -> stringResource(R.string.search_songs_artists)
                                     }
                                 ) 
                             },
@@ -98,13 +102,13 @@ fun SongsListScreen(
                         var showMenu by remember { mutableStateOf(false) }
                         Box {
                             IconButton(onClick = { showMenu = true }) {
-                                Icon(Icons.Default.MoreVert, contentDescription = "Options")
+                                Icon(Icons.Default.MoreVert, contentDescription = stringResource(R.string.options))
                             }
                             DropdownMenu(
                                 expanded = showMenu,
                                 onDismissRequest = { showMenu = false }
                             ) {
-                                DropdownMenuItem(
+                                /*DropdownMenuItem(
                                     text = { Text("Sync with server") },
                                     onClick = { onSyncClick(); showMenu = false },
                                     leadingIcon = { Icon(Icons.Default.Refresh, null) }
@@ -118,15 +122,15 @@ fun SongsListScreen(
                                     text = { Text("Download from server") },
                                     onClick = { onDownloadClick(); showMenu = false },
                                     leadingIcon = { Icon(Icons.Default.CloudDownload, null) }
-                                )
+                                )*/
                                 HorizontalDivider()
                                 DropdownMenuItem(
-                                    text = { Text("Export to JSON") },
+                                    text = { Text(stringResource(R.string.export_json)) },
                                     onClick = { onExportClick(); showMenu = false },
                                     leadingIcon = { Icon(Icons.Default.Save, null) }
                                 )
                                 DropdownMenuItem(
-                                    text = { Text("Import from JSON") },
+                                    text = { Text(stringResource(R.string.import_json)) },
                                     onClick = { onImportClick(); showMenu = false },
                                     leadingIcon = { Icon(Icons.Default.DriveFolderUpload, null) }
                                 )
@@ -142,13 +146,13 @@ fun SongsListScreen(
                             Tab(
                                 selected = selectedTab == 1,
                                 onClick = { onTabSelected(1) },
-                                text = { Text("Favorites") },
+                                text = { Text(stringResource(R.string.favorites)) },
                                 icon = { Icon(Icons.Default.Favorite, contentDescription = null) }
                             )
                             Tab(
                                 selected = selectedTab == 2,
                                 onClick = { onTabSelected(2) },
-                                text = { Text("Playlists") },
+                                text = { Text(stringResource(R.string.playlists)) },
                                 icon = { Icon(Icons.Default.LibraryMusic, contentDescription = null) }
                             )
                         }
@@ -161,8 +165,8 @@ fun SongsListScreen(
                 NavigationBarItem(
                     selected = selectedTab == 0,
                     onClick = { onTabSelected(0) },
-                    icon = { Icon(Icons.Default.List, contentDescription = "All Songs") },
-                    label = { Text("All") }
+                    icon = { Icon(Icons.Default.List, contentDescription = stringResource(R.string.all_songs)) },
+                    label = { Text(stringResource(R.string.all)) }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 1 || selectedTab == 2,
@@ -171,33 +175,33 @@ fun SongsListScreen(
                             onTabSelected(1)
                         }
                     },
-                    icon = { Icon(Icons.Default.LibraryMusic, contentDescription = "Library") },
-                    label = { Text("Library") }
+                    icon = { Icon(Icons.Default.LibraryMusic, contentDescription = stringResource(R.string.library)) },
+                    label = { Text(stringResource(R.string.library)) }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 3,
                     onClick = { onTabSelected(3) },
-                    icon = { Icon(Icons.Default.Speed, contentDescription = "Tempo") },
-                    label = { Text("Tempo") }
+                    icon = { Icon(Icons.Default.Speed, contentDescription = stringResource(R.string.tempo)) },
+                    label = { Text(stringResource(R.string.tempo)) }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 4,
                     onClick = { onTabSelected(4) },
-                    icon = { Icon(Icons.Default.MusicNote, contentDescription = "Tuner") },
-                    label = { Text("Tuner") }
+                    icon = { Icon(Icons.Default.MusicNote, contentDescription = stringResource(R.string.tuner)) },
+                    label = { Text(stringResource(R.string.tuner)) }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 5,
                     onClick = { onTabSelected(5) },
-                    icon = { Icon(Icons.Default.Build, contentDescription = "Tools") },
-                    label = { Text("Tools") }
+                    icon = { Icon(Icons.Default.Build, contentDescription = stringResource(R.string.tools)) },
+                    label = { Text(stringResource(R.string.tools)) }
                 )
             }
         },
         floatingActionButton = {
             if (selectedTab < 3) {
                 FloatingActionButton(onClick = onCreateClick) {
-                    Icon(Icons.Default.Add, contentDescription = "Add Song")
+                    Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_song))
                 }
             }
         }
@@ -210,7 +214,10 @@ fun SongsListScreen(
             } else {
                 when (selectedTab) {
                     3 -> TempoApp(tempoViewModel, audioHelper)
-                    4 -> TunerApp()
+                    4 -> TunerApp(
+                        isAudioPermissionGranted = isAudioPermissionGranted,
+                        onRequestPermission = onRequestPermission
+                    )
                     5 -> ToolsScreen()
                     else -> {
                         LazyColumn(
@@ -224,7 +231,7 @@ fun SongsListScreen(
                                             modifier = Modifier.fillParentMaxSize(),
                                             contentAlignment = Alignment.Center
                                         ) {
-                                            Text("No playlists found", color = MaterialTheme.colorScheme.outline)
+                                            Text(stringResource(R.string.no_playlists_found), color = MaterialTheme.colorScheme.outline)
                                         }
                                     }
                                 }
@@ -242,7 +249,7 @@ fun SongsListScreen(
                                             contentAlignment = Alignment.Center
                                         ) {
                                             Text(
-                                                text = if (selectedTab == 1) "No favorites yet" else "No songs found",
+                                                text = if (selectedTab == 1) stringResource(R.string.no_favorites_yet) else stringResource(R.string.no_songs_found),
                                                 color = MaterialTheme.colorScheme.outline
                                             )
                                         }
@@ -301,7 +308,7 @@ fun SongItem(
                 shape = MaterialTheme.shapes.extraSmall
             ) {
                 Text(
-                    text = "TAB",
+                    text = stringResource(R.string.tab_label),
                     modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp),
                     style = MaterialTheme.typography.labelSmall
                 )
@@ -369,7 +376,9 @@ fun SongsListScreenPreview() {
             selectedTab = 0,
             onTabSelected = {},
             tempoViewModel = TempoViewModel(),
-            audioHelper = AudioHelper(LocalContext.current)
+            audioHelper = AudioHelper(LocalContext.current),
+            isAudioPermissionGranted = true,
+            onRequestPermission = {}
         )
     }
 }

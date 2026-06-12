@@ -135,18 +135,6 @@ dependencies {
     //firebase auth
     implementation("com.google.firebase:firebase-auth")
     //----------------------------------------------------------------------------------------------
-    //todo maps
-    implementation(libs.maps.compose)
-    implementation("com.google.android.gms:play-services-maps:19.2.0")
-    //maps clustering
-    implementation("com.google.maps.android:android-maps-utils:2.3.0")
-    //maps places
-    implementation("com.google.android.libraries.places:places:2.6.0")
-    //location
-    implementation("com.google.android.gms:play-services-location:21.0.1")
-    //maps Directions API
-    implementation("com.google.maps:google-maps-services:2.2.0")
-    implementation("org.slf4j:slf4j-simple:1.7.25")
     //todo ADDS-------------------------------------------------------------------------------------
     implementation ("com.google.android.gms:play-services-ads:22.2.0")
     //----------------------------------------------------------------------------------------------
