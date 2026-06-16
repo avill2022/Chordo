@@ -14,8 +14,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import avill.ladv.chordo.R
 
 @Composable
 fun ChordDiagram(
@@ -37,7 +39,7 @@ fun ChordDiagram(
             Row(verticalAlignment = Alignment.Top) {
                 if (capo > 0) {
                     Text(
-                        text = "${capo}fr",
+                        text = stringResource(R.string.fret_count_suffix, capo),
                         style = MaterialTheme.typography.labelSmall,
                         modifier = Modifier.padding(top = 10.dp, end = 8.dp)
                     )
@@ -135,7 +137,7 @@ fun ChordVersionDialog(
                 )
                 
                 Text(
-                    text = "Variation ${pagerState.currentPage + 1} of ${matrix.size}",
+                    text = stringResource(R.string.variation_count_format, pagerState.currentPage + 1, matrix.size),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.outline
                 )
@@ -177,7 +179,7 @@ fun ChordVersionDialog(
                     onClick = onDismiss,
                     modifier = Modifier.padding(bottom = 8.dp)
                 ) {
-                    Text("Close")
+                    Text(stringResource(R.string.close))
                 }
             }
         }

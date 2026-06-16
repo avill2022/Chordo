@@ -211,4 +211,21 @@
     <string name="download_completed">Download completed successfully</string>
     <string name="registration">Registration</string>
     <string name="enter_name">Enter Name</string>
+
+    <string name="support_developer">Apoya al Desarrollador</string>
+    <string name="no_donation_options">No hay opciones de donación disponibles en este momento.</string>
+    <string name="connecting_to_play_store">Conectando con Play Store...</string>
+    <string name="thanks_for_support">¡Gracias por tu apoyo!</string>
+    <string name="fret_count_suffix">%1$dfr</string>
+    <string name="variation_count_format">Variación %1$d de %2$d</string>
+    <string name="sync_with_server">Sincronizar con el servidor</string>
+    <string name="upload_to_server">Subir al servidor</string>
+    <string name="download_from_server">Descargar del servidor</string>
+    <string name="product_donation_format">%1$s: %2$s</string>
+    <string name="meter_min_50">-50</string>
+    <string name="meter_min_25">-25</string>
+    <string name="meter_0">0</string>
+    <string name="meter_plus_25">+25</string>
+    <string name="meter_plus_50">+50</string>
+    <string name="string_note_format">%1$s%2$d</string>
 </resources>

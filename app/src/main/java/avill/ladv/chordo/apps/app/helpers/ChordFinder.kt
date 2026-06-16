@@ -65,7 +65,7 @@ class ChordFinder {
         val n = noteIndex(root)
         f.add(n)
         f.twelveLess()
-        //f.organize()
+        f.organize()
         f.fiveLess()
         return f
     }
@@ -84,7 +84,6 @@ class ChordFinder {
 
 fun main() {
     val finder = ChordFinder()
-
-        finder.show("A#")
+    finder.show("A#")
 
 }

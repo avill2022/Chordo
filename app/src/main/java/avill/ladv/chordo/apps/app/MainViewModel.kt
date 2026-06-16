@@ -15,6 +15,9 @@ class MainViewModel @Inject constructor(
     private val preferencesKey: PreferencesKey
 ) : ViewModel() {
 
+    private val _isPermission = MutableStateFlow(true)
+    val isPermission: StateFlow<Boolean> = _isPermission.asStateFlow()
+
     private val _isFirstLaunch = MutableStateFlow(true)
     val isFirstLaunch: StateFlow<Boolean> = _isFirstLaunch.asStateFlow()
 
@@ -26,8 +29,11 @@ class MainViewModel @Inject constructor(
     }
     fun init(){
         viewModelScope.launch {
-            preferencesKey.readFirstLaunch.collect {
-                _isFirstLaunch.value = it
+            preferencesKey.readPermission.collect {
+                _isPermission.value = it
+                preferencesKey.readFirstLaunch.collect { value ->
+                    _isFirstLaunch.value = value
+                }
             }
         }
     }
@@ -35,6 +41,11 @@ class MainViewModel @Inject constructor(
     fun completeOnboarding() {
         viewModelScope.launch {
             preferencesKey.saveFirstLaunch(false)
+        }
+    }
+    fun completePermission() {
+        viewModelScope.launch {
+            preferencesKey.savePermissionRequest(false)
         }
     }
 

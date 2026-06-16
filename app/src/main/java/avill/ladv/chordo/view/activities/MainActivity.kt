@@ -74,6 +74,7 @@ class MainActivity : ComponentActivity() {
         
         CoroutineScope(Dispatchers.Main).launch {
             mainViewModel.init()
+            chordoViewModel.getTabs()
             splashScreen.setKeepOnScreenCondition { false }
         }
         audioHelper = AudioHelper(this@MainActivity)

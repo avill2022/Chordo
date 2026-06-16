@@ -144,7 +144,7 @@ class FiguresRepo(var matriz: List<MutableList<Int>>) {
                 }
             }
         }
-        if (minVal == 0) return
+        if (minIdx == 0) return
         matriz = (matriz.drop(minIdx) + matriz.take(minIdx - 1)).toMutableList()
     }
 

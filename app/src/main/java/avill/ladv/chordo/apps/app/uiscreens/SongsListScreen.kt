@@ -109,17 +109,17 @@ fun SongsListScreen(
                                 onDismissRequest = { showMenu = false }
                             ) {
                                 /*DropdownMenuItem(
-                                    text = { Text("Sync with server") },
+                                    text = { Text(stringResource(R.string.sync_with_server)) },
                                     onClick = { onSyncClick(); showMenu = false },
                                     leadingIcon = { Icon(Icons.Default.Refresh, null) }
                                 )
                                 DropdownMenuItem(
-                                    text = { Text("Upload to server") },
+                                    text = { Text(stringResource(R.string.upload_to_server)) },
                                     onClick = { onUploadClick(); showMenu = false },
                                     leadingIcon = { Icon(Icons.Default.CloudUpload, null) }
                                 )
                                 DropdownMenuItem(
-                                    text = { Text("Download from server") },
+                                    text = { Text(stringResource(R.string.download_from_server)) },
                                     onClick = { onDownloadClick(); showMenu = false },
                                     leadingIcon = { Icon(Icons.Default.CloudDownload, null) }
                                 )*/

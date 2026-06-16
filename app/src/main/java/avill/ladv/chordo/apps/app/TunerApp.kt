@@ -231,11 +231,11 @@ fun TunerMeter(centsOffset: Int) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Text("-50", fontSize = 12.sp, color = Color.Gray)
-            Text("-25", fontSize = 12.sp, color = Color.Gray)
-            Text("0", fontSize = 14.sp, color = Color.Green)
-            Text("+25", fontSize = 12.sp, color = Color.Gray)
-            Text("+50", fontSize = 12.sp, color = Color.Gray)
+            Text(stringResource(R.string.meter_min_50), fontSize = 12.sp, color = Color.Gray)
+            Text(stringResource(R.string.meter_min_25), fontSize = 12.sp, color = Color.Gray)
+            Text(stringResource(R.string.meter_0), fontSize = 14.sp, color = Color.Green)
+            Text(stringResource(R.string.meter_plus_25), fontSize = 12.sp, color = Color.Gray)
+            Text(stringResource(R.string.meter_plus_50), fontSize = 12.sp, color = Color.Gray)
         }
 
         Text(
@@ -279,7 +279,7 @@ fun StringGrid(
                     contentColor = Color.White
                 )
             ) {
-                Text("$note$stringNumber", fontSize = 12.sp)
+                Text(stringResource(R.string.string_note_format, note, stringNumber), fontSize = 12.sp)
             }
         }
     }

@@ -243,4 +243,20 @@
     <string name="registration">Registration</string>
     <string name="enter_name">Enter Name</string>
 
+    <string name="support_developer">Support the Developer</string>
+    <string name="no_donation_options">No donation options available right now.</string>
+    <string name="connecting_to_play_store">Connecting to Play Store...</string>
+    <string name="thanks_for_support">Thank you for your support!</string>
+    <string name="fret_count_suffix">%1$dfr</string>
+    <string name="variation_count_format">Variation %1$d of %2$d</string>
+    <string name="sync_with_server">Sync with server</string>
+    <string name="upload_to_server">Upload to server</string>
+    <string name="download_from_server">Download from server</string>
+    <string name="product_donation_format">%1$s: %2$s</string>
+    <string name="meter_min_50">-50</string>
+    <string name="meter_min_25">-25</string>
+    <string name="meter_0">0</string>
+    <string name="meter_plus_25">+25</string>
+    <string name="meter_plus_50">+50</string>
+    <string name="string_note_format">%1$s%2$d</string>
 </resources>

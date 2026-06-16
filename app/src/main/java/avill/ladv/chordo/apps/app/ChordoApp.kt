@@ -62,16 +62,20 @@ fun ChordoApp(
 ) {
     val context = LocalContext.current
     val navController = rememberNavController()
-    viewModel.getTabs()
     val uiState by viewModel.uiState.collectAsState()
     
     val isFirstLaunch by mainViewModel.isFirstLaunch.collectAsState()
+    val isPermissionLaunch by mainViewModel.isPermission.collectAsState()
     val isAudioPermissionGranted by mainViewModel.isAudioPermissionGranted.collectAsState()
 
     val startDestination = remember(isFirstLaunch) {
-        if (isFirstLaunch) Chordo.OnBoarding.route else {
-            if(isAudioPermissionGranted)
-                    Chordo.List.route else Chordo.Permissions.route
+        if (isFirstLaunch)
+            Chordo.OnBoarding.route
+        else {
+            if(isPermissionLaunch)
+                Chordo.Permissions.route
+            else
+                Chordo.List.route
         }
     }
 
@@ -123,6 +127,7 @@ fun ChordoApp(
             PermissionScreen(
                 onRequestPermission = onRequestPermission,
                 onContinue = {
+                    mainViewModel.completePermission()
                     navController.navigate(Chordo.List.route) {
                         popUpTo(Chordo.Permissions.route) { inclusive = true }
                     }

@@ -22,6 +22,7 @@ class PreferencesKey @Inject constructor(@ApplicationContext private val context
 
     private object PreferenceKey {
         val firstLaunch = booleanPreferencesKey(PREFERENCE_FIRST_LAUNCH)
+        val permission = booleanPreferencesKey("PERMISSIONS")
     }
 
     private val dataStore: DataStore<Preferences> = context.dataStore
@@ -29,6 +30,11 @@ class PreferencesKey @Inject constructor(@ApplicationContext private val context
     suspend fun saveFirstLaunch(firstLaunch: Boolean) {
         dataStore.edit { preference ->
             preference[PreferenceKey.firstLaunch] = firstLaunch
+        }
+    }
+    suspend fun savePermissionRequest(firstLaunch: Boolean) {
+        dataStore.edit { preference ->
+            preference[PreferenceKey.permission] = firstLaunch
         }
     }
 
@@ -43,5 +49,20 @@ class PreferencesKey @Inject constructor(@ApplicationContext private val context
         .map { preference ->
             val firstLaunch = preference[PreferenceKey.firstLaunch] ?: true
             firstLaunch
+        }
+
+
+
+    val readPermission: Flow<Boolean> = dataStore.data
+        .catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }
+        .map { preference ->
+            val permissionLaunch = preference[PreferenceKey.permission] ?: true
+            permissionLaunch
         }
 }

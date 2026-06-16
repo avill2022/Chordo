@@ -74,6 +74,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.play.services.location)
+    implementation(libs.billing.ktx)
     //implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -154,6 +155,8 @@ dependencies {
     //----------------------------------------------------------------------------------------------
     // Optional -- Mockito framework
     testImplementation("org.mockito:mockito-core:5.21.0")
+
+    implementation("androidx.work:work-runtime:2.7.1")
 }
 kapt {
     correctErrorTypes = true
