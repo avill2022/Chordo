@@ -2,6 +2,7 @@ package avill.ladv.chordo.apps.app.uiscreens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
@@ -82,6 +83,7 @@ fun SongsListScreen(
                             .fillMaxWidth()
                             .padding(top = 30.dp, start = 16.dp, end = 8.dp, bottom = 4.dp),
                         verticalAlignment = Alignment.CenterVertically
+
                     ) {
                         OutlinedTextField(
                             value = searchText,
@@ -185,7 +187,9 @@ fun SongsListScreen(
         },
         floatingActionButton = {
             if (selectedTab < 3) {
-                FloatingActionButton(onClick = onCreateClick) {
+                FloatingActionButton(onClick = onCreateClick,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,){
                     Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_song))
                 }
             }

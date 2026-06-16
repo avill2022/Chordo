@@ -88,18 +88,21 @@ fun OnboardingPagerItem(page: OnboardingPage) {
         Text(
             text = page.image,
             fontSize = 100.sp,
+            color = MaterialTheme.colorScheme.outline,
             modifier = Modifier.padding(bottom = 32.dp)
         )
         Text(
             text = page.title,
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.outline,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = page.description,
             style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.outline,
             textAlign = TextAlign.Center
         )
     }
@@ -124,32 +127,34 @@ fun PermissionScreen(
         Text(
             text = "🎙️",
             fontSize = 100.sp,
-            modifier = Modifier.padding(bottom = 32.dp)
+            modifier = Modifier.padding(bottom = 32.dp),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.outline
         )
         Text(
             text = stringResource(R.string.permission_audio_title),
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.outline
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = stringResource(R.string.permission_audio_desc),
             style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.outline
         )
         Spacer(modifier = Modifier.height(48.dp))
         Button(
             onClick = onRequestPermission,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(stringResource(R.string.grant_permission))
+            Text(stringResource(R.string.grant_permission), color = MaterialTheme.colorScheme.outline)
         }
         TextButton(
             onClick = onContinue,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(stringResource(R.string.continue_without_tuner))
+            Text(stringResource(R.string.continue_without_tuner), color = MaterialTheme.colorScheme.outline)
         }
     }
 }

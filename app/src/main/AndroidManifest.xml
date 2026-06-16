@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
     <!-- Uses-permission ======================================================================== -->
     <uses-permission android:name="android.permission.STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
@@ -23,7 +22,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MyShellApplicationJetpackCompose"
+        android:theme="@style/Theme.Chordo"
         android:usesCleartextTraffic="true"
         tools:ignore="DiscouragedApi,LockedOrientationActivity"
         tools:replace="android:theme"
