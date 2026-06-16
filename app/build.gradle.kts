@@ -9,9 +9,9 @@ plugins {
     //hilt
     id("com.google.dagger.hilt.android")
     //services
-    id("com.google.gms.google-services")
+    //id("com.google.gms.google-services")
     //firebase
-    id("com.google.firebase.crashlytics")
+    //id("com.google.firebase.crashlytics")
 }
 /*get The sha1
 ./gradlew signingReport*/
@@ -119,7 +119,7 @@ dependencies {
     implementation(libs.coil.compose)
     //----------------------------------------------------------------------------------------------
     //todo: firebase
-    implementation(libs.firebase.firestore.ktx)
+    /*implementation(libs.firebase.firestore.ktx)
     implementation("com.google.firebase:firebase-database:21.0.0")
     //Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:33.16.0"))
@@ -134,7 +134,7 @@ dependencies {
 
     implementation("com.google.firebase:firebase-core:21.1.1")
     //firebase auth
-    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-auth")*/
     //----------------------------------------------------------------------------------------------
     implementation("com.github.bumptech.glide:glide:4.16.0")
     // ----------------------------------------------------------------------------------------------

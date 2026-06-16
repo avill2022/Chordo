@@ -22,6 +22,9 @@ class MainViewModel @Inject constructor(
     val isAudioPermissionGranted: StateFlow<Boolean> = _isAudioPermissionGranted.asStateFlow()
 
     init {
+
+    }
+    fun init(){
         viewModelScope.launch {
             preferencesKey.readFirstLaunch.collect {
                 _isFirstLaunch.value = it

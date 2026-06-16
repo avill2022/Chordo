@@ -39,6 +39,7 @@ import avill.ladv.chordo.apps.app.MainViewModel
 import avill.ladv.chordo.apps.app.TempoViewModel
 import avill.ladv.chordo.apps.app.TunerApp
 import avill.ladv.chordo.apps.app.helpers.AudioHelper
+import avill.ladv.chordo.apps.app.helpers.main
 import avill.ladv.chordo.ui.theme.AppNameTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -72,6 +73,7 @@ class MainActivity : ComponentActivity() {
         splashScreen.setKeepOnScreenCondition { true }
         
         CoroutineScope(Dispatchers.Main).launch {
+            mainViewModel.init()
             splashScreen.setKeepOnScreenCondition { false }
         }
         audioHelper = AudioHelper(this@MainActivity)

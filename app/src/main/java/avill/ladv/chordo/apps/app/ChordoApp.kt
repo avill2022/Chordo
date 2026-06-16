@@ -31,6 +31,7 @@ import avill.ladv.chordo.apps.app.uiscreens.SongsListScreen
 @Composable
 fun NamePreviewDark() {
     ChordoApp(
+        mainViewModel = hiltViewModel(),
         viewModel = hiltViewModel(),
         tempoViewModel = hiltViewModel(),
         audioHelper = AudioHelper(LocalContext.current),
@@ -42,6 +43,7 @@ fun NamePreviewDark() {
 @Composable
 fun NamePreview() {
     ChordoApp(
+        mainViewModel = hiltViewModel(),
         viewModel = hiltViewModel(),
         tempoViewModel = hiltViewModel(),
         audioHelper = AudioHelper(LocalContext.current),
@@ -52,9 +54,9 @@ fun NamePreview() {
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun ChordoApp(
-    mainViewModel: MainViewModel = hiltViewModel(),
+    mainViewModel: MainViewModel,
     viewModel: ChordoViewModel,
-    tempoViewModel: TempoViewModel = hiltViewModel(),
+    tempoViewModel: TempoViewModel,
     audioHelper: AudioHelper,
     onRequestPermission: () -> Unit
 ) {
@@ -67,7 +69,10 @@ fun ChordoApp(
     val isAudioPermissionGranted by mainViewModel.isAudioPermissionGranted.collectAsState()
 
     val startDestination = remember(isFirstLaunch) {
-        if (isFirstLaunch) Chordo.OnBoarding.route else Chordo.List.route
+        if (isFirstLaunch) Chordo.OnBoarding.route else {
+            if(isAudioPermissionGranted)
+                    Chordo.List.route else Chordo.Permissions.route
+        }
     }
 
     LaunchedEffect(isAudioPermissionGranted) {
@@ -124,7 +129,7 @@ fun ChordoApp(
                 }
             )
         }
-        
+
         composable(Chordo.List.route) {
             SongsListScreen(
                 songs = uiState.filteredSongs,
