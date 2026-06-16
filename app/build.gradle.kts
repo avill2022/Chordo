@@ -72,6 +72,7 @@ dependencies {
     implementation("androidx.compose.material:material:1.8.3")
 
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.material.icons.extended)
     implementation(libs.play.services.location)
     //implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
@@ -135,35 +136,14 @@ dependencies {
     //firebase auth
     implementation("com.google.firebase:firebase-auth")
     //----------------------------------------------------------------------------------------------
-    //todo ADDS-------------------------------------------------------------------------------------
-    implementation ("com.google.android.gms:play-services-ads:22.2.0")
-    //----------------------------------------------------------------------------------------------
-    //----------------------------------------------------------------------------------------------
-    //glide load images
     implementation("com.github.bumptech.glide:glide:4.16.0")
-    //gif
-    //implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.27")
-    //svg images
-    implementation("io.coil-kt:coil-svg:2.4.0")
+    // ----------------------------------------------------------------------------------------------
     //qr
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
     implementation("androidx.multidex:multidex:2.0.1")
-
     // Easy Permissions
     implementation ("com.vmadalin:easypermissions-ktx:1.0.0")
-    //wifi
-    implementation("io.github.thanosfisherman.wifiutils:wifiutils:1.6.6")
-    //work runtime for auto boot
-    implementation("androidx.work:work-runtime-ktx:2.9.0")
-    //video exo player animation for the login
-    implementation("com.google.android.exoplayer:exoplayer:2.19.1")
-    //media3
-    implementation("androidx.media3:media3-ui:1.9.0")
-    implementation("androidx.media3:media3-exoplayer:1.9.0")
-    implementation("androidx.media3:media3-session:1.2.1")
-    //trigger
-    //implementation ("com.jakewharton:process-phoenix:2.1.2")
     //View------------------------------------------------------------------------------------------
     //splash screen
     implementation("androidx.core:core-splashscreen:1.2.0")
@@ -174,10 +154,6 @@ dependencies {
     //----------------------------------------------------------------------------------------------
     // Optional -- Mockito framework
     testImplementation("org.mockito:mockito-core:5.21.0")
-    //camera
-    implementation("androidx.camera:camera-camera2:1.5.2")
-    implementation("androidx.camera:camera-view:1.5.2")
-    implementation("androidx.compose.material:material-icons-extended")
 }
 kapt {
     correctErrorTypes = true

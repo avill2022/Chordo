@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Uses-permission ======================================================================== -->
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID" /> <!-- FILES -->
     <uses-permission android:name="android.permission.STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
@@ -38,18 +37,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity> <!-- Receiver =========================================================================== -->
-
-
-
         <!-- Providers ========================================================================== -->
         <!-- Meta-data ========================================================================= -->
-        <meta-data
-            android:name="com.google.android.gms.vision.DEPENDENCIES"
-            android:value="face" /> <!-- AdMob App ID: app_test_id_add, app_id_add -->
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/app_test_id_add" />
-
     </application>
 
 </manifest>
