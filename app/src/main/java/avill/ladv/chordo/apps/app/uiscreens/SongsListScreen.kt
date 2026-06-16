@@ -108,21 +108,6 @@ fun SongsListScreen(
                                 expanded = showMenu,
                                 onDismissRequest = { showMenu = false }
                             ) {
-                                /*DropdownMenuItem(
-                                    text = { Text(stringResource(R.string.sync_with_server)) },
-                                    onClick = { onSyncClick(); showMenu = false },
-                                    leadingIcon = { Icon(Icons.Default.Refresh, null) }
-                                )
-                                DropdownMenuItem(
-                                    text = { Text(stringResource(R.string.upload_to_server)) },
-                                    onClick = { onUploadClick(); showMenu = false },
-                                    leadingIcon = { Icon(Icons.Default.CloudUpload, null) }
-                                )
-                                DropdownMenuItem(
-                                    text = { Text(stringResource(R.string.download_from_server)) },
-                                    onClick = { onDownloadClick(); showMenu = false },
-                                    leadingIcon = { Icon(Icons.Default.CloudDownload, null) }
-                                )*/
                                 HorizontalDivider()
                                 DropdownMenuItem(
                                     text = { Text(stringResource(R.string.export_json)) },

@@ -8,10 +8,6 @@ plugins {
     id("kotlin-parcelize")
     //hilt
     id("com.google.dagger.hilt.android")
-    //services
-    //id("com.google.gms.google-services")
-    //firebase
-    //id("com.google.firebase.crashlytics")
 }
 /*get The sha1
 ./gradlew signingReport*/
@@ -38,9 +34,6 @@ android {
             )
             // Enable Crashlytics for release builds
             isDebuggable = false
-            /*firebaseCrashlytics {
-                mappingFileUploadEnabled = true
-            }*/
         }
 
     }
@@ -119,23 +112,6 @@ dependencies {
     //jsonConverter
     implementation(libs.coil.compose)
     //----------------------------------------------------------------------------------------------
-    //todo: firebase
-    /*implementation(libs.firebase.firestore.ktx)
-    implementation("com.google.firebase:firebase-database:21.0.0")
-    //Import the Firebase BoM
-    implementation(platform("com.google.firebase:firebase-bom:33.16.0"))
-
-    implementation("com.google.firebase:firebase-firestore")
-    // Add the dependencies for Firebase products you want to use
-    // When using the BoM, don't specify versions in Firebase dependencies
-    //implementation("com.google.firebase:firebase-database")
-    implementation("com.google.firebase:firebase-messaging")
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-crashlytics")
-
-    implementation("com.google.firebase:firebase-core:21.1.1")
-    //firebase auth
-    implementation("com.google.firebase:firebase-auth")*/
     //----------------------------------------------------------------------------------------------
     implementation("com.github.bumptech.glide:glide:4.16.0")
     // ----------------------------------------------------------------------------------------------
