@@ -25,7 +25,7 @@ fun convertAmericanToLatin(text: String): String {
         var convertedChord = originalChord
 
         // Replace each American note with its Latin equivalent
-        americanToLatin.forEach { (american, latin) ->
+        americanToLatin.forEach { (american, _) ->
             // Match the note at the beginning of the chord (considering sharps/flats)
             val notePattern = Regex("^($american)([#b]?)")
             convertedChord = convertedChord.replace(notePattern) { noteMatch ->
@@ -58,7 +58,7 @@ fun convertAmericanToLatinEnhanced(text: String): String {
         americanToLatin.forEach { (american, latin) ->
             val notePattern = Regex("^($american)([#b]?)")
             convertedChord = convertedChord.replace(notePattern) { noteMatch ->
-                val note = noteMatch.groupValues[1]
+                noteMatch.groupValues[1]
                 val accidental = noteMatch.groupValues[2]
                 latin + accidental
             }
@@ -181,7 +181,7 @@ fun convertLatinToAmerican(text: String): String {
         var convertedChord = originalChord
 
         // Replace each Latin note with its American equivalent
-        latinToAmerican.forEach { (latin, american) ->
+        latinToAmerican.forEach { (latin, _) ->
             // Match the note at the beginning of the chord (considering sharps/flats)
             val notePattern = Regex("^($latin)([#b]?)")
             convertedChord = convertedChord.replace(notePattern) { noteMatch ->
@@ -214,7 +214,7 @@ fun convertLatinToAmericanEnhanced(text: String): String {
         latinToAmerican.forEach { (latin, american) ->
             val notePattern = Regex("^($latin)([#b]?)")
             convertedChord = convertedChord.replace(notePattern) { noteMatch ->
-                val note = noteMatch.groupValues[1]
+                noteMatch.groupValues[1]
                 val accidental = noteMatch.groupValues[2]
                 american + accidental
             }

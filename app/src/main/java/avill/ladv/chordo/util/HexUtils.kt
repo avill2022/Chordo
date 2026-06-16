@@ -32,7 +32,7 @@ fun Long.toHexString(): String = java.lang.Long.toHexString(this).uppercase(Loca
 /**
  * Converts an Int to its Hexadecimal string representation.
  */
-fun Int.toHexString(): String = java.lang.Integer.toHexString(this).uppercase(Locale.getDefault())
+fun Int.toHexString(): String = Integer.toHexString(this).uppercase(Locale.getDefault())
 
 /**
  * Pads a string with leading zeros until it reaches the desired [length].

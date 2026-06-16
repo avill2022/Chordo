@@ -3,7 +3,7 @@ class Tab(val index: Int, val content: String)
 
 // Function 1: Extract complete guitar tab blocks
 fun extractTabs(text: String,r:Int,count:Int = 0): List<Tab> {
-    val tabs = mutableListOf<Tab>()
+    mutableListOf<Tab>()
     // Pattern to match a complete tab block with all 6 strings
     var regex = Regex(
         "(?:e\\|.*?\\|\\s*\\n)" +      // e string

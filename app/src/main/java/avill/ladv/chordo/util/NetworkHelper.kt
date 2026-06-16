@@ -114,7 +114,7 @@ class NetworkHelper @Inject constructor(
                 }
             }
             capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
-                val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+                context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
                 // Note: Actual speed check via NetworkCapabilities is more accurate on API 21+
                 val kbps = capabilities.linkDownstreamBandwidthKbps
                 when {

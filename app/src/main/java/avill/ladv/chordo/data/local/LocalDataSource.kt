@@ -87,9 +87,9 @@ class LocalDataSource @Inject constructor(val context: Context) {
             data = "{\"key\":\"value\"}"
         ))
         //get
-        val modelEntity: ModelEntity = entityDao.getModelBy(0).first()
+        entityDao.getModelBy(0).first()
         //
-        val readModelEntities: MutableList<ModelEntity> = entityDao.getAllModels().first()
+        entityDao.getAllModels().first()
         /*lifecycleScope.launch {
     localDataSource.dbTest()
 }*/

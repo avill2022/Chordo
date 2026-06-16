@@ -77,7 +77,7 @@ object MyImplicitIntentManager {
         } else {
             val intent = Intent(Intent.ACTION_PICK)
             // set type
-            intent.setType("video/*")
+            intent.type = "video/*"
             // start activity result
             activity.startActivityForResult(
                 Intent.createChooser(intent, "Select Video"),
@@ -89,7 +89,7 @@ object MyImplicitIntentManager {
     fun senPhoneNumber(activity: Activity, phone: String) {
         // Create an implicit intent to view a webpage
         val intent = Intent(Intent.ACTION_DIAL)
-        intent.setData(Uri.parse("tel:+$phone"))
+        intent.data = Uri.parse("tel:+$phone")
         // Verify that the intent resolves to an activity
         if (intent.resolveActivity(activity.packageManager) != null) {
             // Start the activity if it resolves successfully
@@ -121,7 +121,7 @@ object MyImplicitIntentManager {
         }
         // Create an implicit intent to view a webpage
         val intent = Intent(Intent.ACTION_CALL)
-        intent.setData(Uri.parse("tel:+$phone"))
+        intent.data = Uri.parse("tel:+$phone")
         // Verify that the intent resolves to an activity
         if (intent.resolveActivity(activity.packageManager) != null) {
             // Start the activity if it resolves successfully
@@ -140,7 +140,7 @@ object MyImplicitIntentManager {
         intent.putExtra(Intent.EXTRA_SUBJECT, subject)
         intent.putExtra(Intent.EXTRA_TEXT, content)
         // set type of intent
-        intent.setType("message/rfc822")
+        intent.type = "message/rfc822"
         // startActivity with intent with chooser as Email client using createChooser function
         // Verify that the intent resolves to an activity
         if (intent.resolveActivity(activity.packageManager) != null) {
@@ -168,7 +168,7 @@ object MyImplicitIntentManager {
 
     fun pickImage(activity: Activity) {
         val intent = Intent(Intent.ACTION_PICK)
-        intent.setType("image/*")
+        intent.type = "image/*"
         // Verify that the intent resolves to an activity
         if (intent.resolveActivity(activity.packageManager) != null) {
             // Start the activity if it resolves successfully
@@ -189,7 +189,7 @@ object MyImplicitIntentManager {
     //<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     fun pickImageAndReturn(activity: Activity) {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.setType("image/*")
+        intent.type = "image/*"
         // Verify that the intent resolves to an activity
         if (intent.resolveActivity(activity.packageManager) != null) {
             // Start the activity if it resolves successfully
@@ -211,7 +211,7 @@ object MyImplicitIntentManager {
     //<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     fun pickFileAndReturn(activity: Activity) {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.setType("file/*")
+        intent.type = "file/*"
         // Verify that the intent resolves to an activity
         if (intent.resolveActivity(activity.packageManager) != null) {
             // Start the activity if it resolves successfully
@@ -254,7 +254,7 @@ object MyImplicitIntentManager {
     fun sendMsg(activity: Activity, phone: String?, content: String?) {
         val smsVIntent = Intent(Intent.ACTION_VIEW)
         // prompts only sms-mms clients
-        smsVIntent.setType("vnd.android-dir/mms-sms")
+        smsVIntent.type = "vnd.android-dir/mms-sms"
         // extra fields for number and message respectively
         smsVIntent.putExtra("address", phone)
         smsVIntent.putExtra("sms_body", content)
@@ -309,9 +309,9 @@ object MyImplicitIntentManager {
 
     fun openWhatsapp(activity: Activity) {
         val sendIntent = Intent()
-        sendIntent.setAction(Intent.ACTION_SEND)
+        sendIntent.action = Intent.ACTION_SEND
         sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.")
-        sendIntent.setType("text/plain")
+        sendIntent.type = "text/plain"
         sendIntent.setPackage("com.whatsapp")
         activity.startActivity(Intent.createChooser(sendIntent, ""))
         //startActivity(sendIntent);

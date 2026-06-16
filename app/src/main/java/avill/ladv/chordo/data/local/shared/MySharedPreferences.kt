@@ -42,7 +42,7 @@ class MySharedPreferences (context: Context, name: String) {
         return sharedPref.getFloat(s, i)
     }
     fun saveFloat(s: String, fl: Float) {
-        sharedPref.edit().apply() {
+        sharedPref.edit().apply {
             putFloat(s, fl)
             apply()
         }
@@ -51,7 +51,7 @@ class MySharedPreferences (context: Context, name: String) {
         return sharedPref.getLong(s, i)
     }
     fun saveLong(s: String, fl: Long) {
-        sharedPref.edit().apply() {
+        sharedPref.edit().apply {
             putLong(s, fl)
             apply()
         }
