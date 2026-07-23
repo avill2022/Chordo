@@ -74,6 +74,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.play.services.location)
+    implementation(libs.play.services.ads)
     implementation(libs.billing.ktx)
     //implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)

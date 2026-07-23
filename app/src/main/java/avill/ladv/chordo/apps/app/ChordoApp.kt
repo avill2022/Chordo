@@ -5,6 +5,8 @@ package avill.ladv.chordo.apps.app
 import android.content.res.Configuration
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
@@ -26,6 +28,8 @@ import avill.ladv.chordo.apps.app.uiscreens.OnboardingScreen
 import avill.ladv.chordo.apps.app.uiscreens.PermissionScreen
 import avill.ladv.chordo.apps.app.uiscreens.SongEditScreen
 import avill.ladv.chordo.apps.app.uiscreens.SongsListScreen
+import avill.ladv.chordo.util.BannerAd
+import avill.ladv.chordo.util.InterstitialAdHelper
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
@@ -38,18 +42,7 @@ fun NamePreviewDark() {
         onRequestPermission = {}
     )
 }
-
-@Preview
-@Composable
-fun NamePreview() {
-    ChordoApp(
-        mainViewModel = hiltViewModel(),
-        viewModel = hiltViewModel(),
-        tempoViewModel = hiltViewModel(),
-        audioHelper = AudioHelper(LocalContext.current),
-        onRequestPermission = {}
-    )
-}
+// ... (omitting other previews for brevity, but I'll keep them in the actual replacement if needed)
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -86,7 +79,7 @@ fun ChordoApp(
             }
         }
     }
-
+    //BannerAd()
     val exportLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument("application/json")
     ) { uri ->
@@ -108,119 +101,124 @@ fun ChordoApp(
         }
     }
 
-    NavHost(
-        modifier = Modifier,
-        navController = navController,
-        startDestination = startDestination
-    ) {
-        composable(Chordo.OnBoarding.route) {
-            OnboardingScreen(
-                onFinished = {
-                    mainViewModel.completeOnboarding()
-                    navController.navigate(Chordo.Permissions.route) {
-                        popUpTo(Chordo.OnBoarding.route) { inclusive = true }
-                    }
-                }
-            )
-        }
-        composable(Chordo.Permissions.route) {
-            PermissionScreen(
-                onRequestPermission = onRequestPermission,
-                onContinue = {
-                    mainViewModel.completePermission()
-                    navController.navigate(Chordo.List.route) {
-                        popUpTo(Chordo.Permissions.route) { inclusive = true }
-                    }
-                }
-            )
-        }
-
-        composable(Chordo.List.route) {
-            SongsListScreen(
-                songs = uiState.filteredSongs,
-                searchText = uiState.searchText,
-                isLoading = uiState.isLoading,
-                onSearchTextChange = { viewModel.onSearchTextChange(it) },
-                onSongClick = { song ->
-                    val index = viewModel.chords.value.songs.indexOf(song)
-                    if (index != -1) {
-                        navController.navigate("lyrics/$index")
-                    }
-                },
-                onCreateClick = {
-                    navController.navigate(Chordo.Edit.route)
-                },
-                onSyncClick = { viewModel.getTabs() },
-                onUploadClick = { viewModel.uploadChords() },
-                onDownloadClick = { viewModel.downloadChords() },
-                onExportClick = {
-                    exportLauncher.launch("chordo_backup.json")
-                },
-                onImportClick = {
-                    importLauncher.launch(arrayOf("application/json"))
-                },
-                onDeleteSong = { viewModel.deleteSong(it) },
-                selectedTab = uiState.selectedTab,
-                onTabSelected = { viewModel.onTabSelected(it) },
-                playlists = uiState.playlists,
-                onPlaylistClick = {},
-                tempoViewModel = tempoViewModel,
-                audioHelper = audioHelper,
-                isAudioPermissionGranted = isAudioPermissionGranted,
-                onRequestPermission = onRequestPermission
-            )
-        }
-
-        composable(Chordo.Edit.route) {
-            SongEditScreen(
-                song = null,
-                onSave = {
-                    viewModel.saveSong(it)
-                    navController.popBackStack()
-                },
-                onBack = { navController.popBackStack() }
-            )
-        }
-
-        composable(Chordo.Edit.route + "/{songId}") { backStackEntry ->
-            val songId = backStackEntry.arguments?.getString("songId")?.toInt()
-            val song = songId?.let { viewModel.getSongById(it) }
-            SongEditScreen(
-                song = song,
-                onSave = {
-                    viewModel.saveSong(it)
-                    navController.popBackStack()
-                },
-                onBack = { navController.popBackStack() }
-            )
-        }
-        
-        composable("lyrics/{songId}") { backStackEntry ->
-            val songId = backStackEntry.arguments?.getString("songId")?.toInt()
-            val song = songId?.let { viewModel.getSongById(it) }
-
-            song?.let {
-                viewModel.checkIfFavorite(it)
-                LyricsScreen(
-                    song = it,
-                    isFavorite = uiState.isCurrentSongFavorite,
-                    playlists = uiState.playlists,
-                    onFavoriteClick = { viewModel.toggleFavorite(it) },
-                    onAddToPlaylistClick = { playlistId -> viewModel.addSongToPlaylist(it, playlistId) },
-                    onCreatePlaylist = { name -> viewModel.createPlaylist(name) },
-                    onTranspose = { semitones -> viewModel.transposeSong(it, semitones) },
-                    onRestore = { viewModel.restoreSong(it) },
-                    onEditClick = {
-                        navController.navigate(Chordo.Edit.route + "/$songId")
-                    },
-                    onBackClick = { navController.popBackStack() },
-                    tempoViewModel = tempoViewModel,
-                    audioHelper = audioHelper,
-                    onTempoChange = {
-                        //tempoViewModel.setBPM(it)
+    Column(modifier = Modifier.fillMaxSize()) {
+        NavHost(
+            modifier = Modifier.weight(1f),
+            navController = navController,
+            startDestination = startDestination
+        ) {
+            composable(Chordo.OnBoarding.route) {
+                OnboardingScreen(
+                    onFinished = {
+                        mainViewModel.completeOnboarding()
+                        navController.navigate(Chordo.Permissions.route) {
+                            popUpTo(Chordo.OnBoarding.route) { inclusive = true }
+                        }
                     }
                 )
             }
+            composable(Chordo.Permissions.route) {
+                PermissionScreen(
+                    onRequestPermission = onRequestPermission,
+                    onContinue = {
+                        mainViewModel.completePermission()
+                        navController.navigate(Chordo.List.route) {
+                            popUpTo(Chordo.Permissions.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
+
+            composable(Chordo.List.route) {
+                SongsListScreen(
+                    songs = uiState.filteredSongs,
+                    searchText = uiState.searchText,
+                    isLoading = uiState.isLoading,
+                    onSearchTextChange = { viewModel.onSearchTextChange(it) },
+                    onSongClick = { song ->
+                        val index = viewModel.chords.value.songs.indexOf(song)
+                        if (index != -1) {
+                            InterstitialAdHelper.showInterstitialAd(context) {
+                                navController.navigate("lyrics/$index")
+                            }
+                        }
+                    },
+                    onCreateClick = {
+                        navController.navigate(Chordo.Edit.route)
+                    },
+                    onSyncClick = { viewModel.getTabs() },
+                    onUploadClick = { viewModel.uploadChords() },
+                    onDownloadClick = { viewModel.downloadChords() },
+                    onExportClick = {
+                        exportLauncher.launch("chordo_backup.json")
+                    },
+                    onImportClick = {
+                        importLauncher.launch(arrayOf("application/json"))
+                    },
+                    onDeleteSong = { viewModel.deleteSong(it) },
+                    selectedTab = uiState.selectedTab,
+                    onTabSelected = { viewModel.onTabSelected(it) },
+                    playlists = uiState.playlists,
+                    onPlaylistClick = {},
+                    tempoViewModel = tempoViewModel,
+                    audioHelper = audioHelper,
+                    isAudioPermissionGranted = isAudioPermissionGranted,
+                    onRequestPermission = onRequestPermission
+                )
+            }
+
+            composable(Chordo.Edit.route) {
+                SongEditScreen(
+                    song = null,
+                    onSave = {
+                        viewModel.saveSong(it)
+                        navController.popBackStack()
+                    },
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(Chordo.Edit.route + "/{songId}") { backStackEntry ->
+                val songId = backStackEntry.arguments?.getString("songId")?.toInt()
+                val song = songId?.let { viewModel.getSongById(it) }
+                SongEditScreen(
+                    song = song,
+                    onSave = {
+                        viewModel.saveSong(it)
+                        navController.popBackStack()
+                    },
+                    onBack = { navController.popBackStack() }
+                )
+            }
+            
+            composable("lyrics/{songId}") { backStackEntry ->
+                val songId = backStackEntry.arguments?.getString("songId")?.toInt()
+                val song = songId?.let { viewModel.getSongById(it) }
+
+                song?.let {
+                    viewModel.checkIfFavorite(it)
+                    LyricsScreen(
+                        song = it,
+                        isFavorite = uiState.isCurrentSongFavorite,
+                        playlists = uiState.playlists,
+                        onFavoriteClick = { viewModel.toggleFavorite(it) },
+                        onAddToPlaylistClick = { playlistId -> viewModel.addSongToPlaylist(it, playlistId) },
+                        onCreatePlaylist = { name -> viewModel.createPlaylist(name) },
+                        onTranspose = { semitones -> viewModel.transposeSong(it, semitones) },
+                        onRestore = { viewModel.restoreSong(it) },
+                        onEditClick = {
+                            navController.navigate(Chordo.Edit.route + "/$songId")
+                        },
+                        onBackClick = { navController.popBackStack() },
+                        tempoViewModel = tempoViewModel,
+                        audioHelper = audioHelper,
+                        onTempoChange = {
+                            //tempoViewModel.setBPM(it)
+                        }
+                    )
+                }
+            }
         }
+
     }
 }

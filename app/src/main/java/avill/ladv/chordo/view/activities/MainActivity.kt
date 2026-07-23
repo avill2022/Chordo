@@ -41,6 +41,7 @@ import avill.ladv.chordo.apps.app.TunerApp
 import avill.ladv.chordo.apps.app.helpers.AudioHelper
 import avill.ladv.chordo.apps.app.helpers.main
 import avill.ladv.chordo.ui.theme.AppNameTheme
+import avill.ladv.chordo.util.InterstitialAdHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -72,6 +73,9 @@ class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
         splashScreen.setKeepOnScreenCondition { true }
         
+        // Pre-load AdMob Interstitial Ad
+        InterstitialAdHelper.loadInterstitialAd(this)
+
         CoroutineScope(Dispatchers.Main).launch {
             mainViewModel.init()
             chordoViewModel.getTabs()

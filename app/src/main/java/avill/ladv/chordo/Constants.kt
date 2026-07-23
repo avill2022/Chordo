@@ -63,4 +63,9 @@ object Constants {
     val AppBarExpendedHeight = 400.dp
 
     val apiKey = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkNzJhMmM4MDI2ZmJlZjViNmM5M2M4M2UwZDFjOGVmNCIsIm5iZiI6MTc2ODcwNjkyNS40MzIsInN1YiI6IjY5NmM1MzZkNjczZDkwZmE4YTM2YWFhMyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.fo2nB-TNnSZReEgiZFIadEreJuPs6Oy3fd7JP8SVN68"
+
+    object AdMob {
+        const val BANNER_ID = "ca-app-pub-3940256099942544/6300978111" // Test ID
+        const val INTERSTITIAL_ID = "ca-app-pub-3940256099942544/1033173712" // Test ID
+    }
 }
