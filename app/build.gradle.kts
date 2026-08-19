@@ -23,8 +23,8 @@ android {
         applicationId = "avill.ladv.chordo"
         minSdk = 25
         targetSdk = 36
-        versionCode = 2
-        versionName = "1.2"
+        versionCode = 3
+        versionName = "1.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -90,7 +90,6 @@ dependencies {
     //todo viewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.9.1")
     //todo coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
