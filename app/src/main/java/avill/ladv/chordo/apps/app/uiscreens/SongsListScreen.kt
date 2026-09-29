@@ -108,7 +108,7 @@ fun SongsListScreen(
                                 expanded = showMenu,
                                 onDismissRequest = { showMenu = false }
                             ) {
-                                /*DropdownMenuItem(
+                                DropdownMenuItem(
                                     text = { Text(stringResource(R.string.sync_with_server)) },
                                     onClick = { onSyncClick(); showMenu = false },
                                     leadingIcon = { Icon(Icons.Default.Refresh, null) }
@@ -122,7 +122,7 @@ fun SongsListScreen(
                                     text = { Text(stringResource(R.string.download_from_server)) },
                                     onClick = { onDownloadClick(); showMenu = false },
                                     leadingIcon = { Icon(Icons.Default.CloudDownload, null) }
-                                )*/
+                                )
                                 HorizontalDivider()
                                 DropdownMenuItem(
                                     text = { Text(stringResource(R.string.export_json)) },

@@ -138,9 +138,10 @@ fun ChordoApp(
                     onSongClick = { song ->
                         val index = viewModel.chords.value.songs.indexOf(song)
                         if (index != -1) {
-                            InterstitialAdHelper.showInterstitialAd(context) {
+                            navController.navigate("lyrics/$index")
+                            /*InterstitialAdHelper.showInterstitialAd(context) {
                                 navController.navigate("lyrics/$index")
-                            }
+                            }*/
                         }
                     },
                     onCreateClick = {
