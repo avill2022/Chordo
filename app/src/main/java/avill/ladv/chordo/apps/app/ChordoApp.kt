@@ -184,8 +184,8 @@ fun ChordoApp(
                 val song = songId?.let { viewModel.getSongById(it) }
                 SongEditScreen(
                     song = song,
-                    onSave = {
-                        viewModel.saveSong(it)
+                    onSave = { updatedSong ->
+                        viewModel.saveSong(updatedSong, originalSong = song, songIndex = songId)
                         navController.popBackStack()
                     },
                     onBack = { navController.popBackStack() }

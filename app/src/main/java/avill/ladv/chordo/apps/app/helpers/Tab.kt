@@ -167,6 +167,45 @@ fun replaceTabsFlexible(text: String): String {
 }
 
 // Example usage
+fun processAndExtractTabs(text: String): Pair<String, String> {
+    val lines = text.lines()
+    val linePattern = Regex("^[eEaAbBgGdDhH1-6][|:].*[-|].*")
+    val extractedTabs = mutableListOf<String>()
+    val updatedContentLines = mutableListOf<String>()
+    var currentTabBlock = mutableListOf<String>()
+    var tabIndex = 0
+
+    fun flushTabBlock() {
+        if (currentTabBlock.isNotEmpty()) {
+            if (currentTabBlock.size >= 3) {
+                val tabHeader = "[tab-$tabIndex]"
+                val blockText = currentTabBlock.joinToString("\n")
+                extractedTabs.add("$tabHeader\n$blockText")
+                updatedContentLines.add(tabHeader)
+                tabIndex++
+            } else {
+                updatedContentLines.addAll(currentTabBlock)
+            }
+            currentTabBlock.clear()
+        }
+    }
+
+    for (line in lines) {
+        val trimmed = line.trim()
+        if (trimmed.matches(linePattern) && trimmed.contains('-')) {
+            currentTabBlock.add(line)
+        } else {
+            flushTabBlock()
+            updatedContentLines.add(line)
+        }
+    }
+    flushTabBlock()
+
+    val formattedTabs = extractedTabs.joinToString("\n\n")
+    val formattedContent = updatedContentLines.joinToString("\n")
+    return Pair(formattedTabs, formattedContent)
+}
+
 fun main() {
     val text = """
         Here's a guitar tab:

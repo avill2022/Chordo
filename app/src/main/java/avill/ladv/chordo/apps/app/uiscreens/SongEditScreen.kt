@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import avill.ladv.chordo.R
 import avill.ladv.chordo.apps.app.helpers.ChordTransposer
+import avill.ladv.chordo.apps.app.helpers.processAndExtractTabs
 import avill.ladv.chordo.apps.app.model.Song
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,23 +35,23 @@ fun SongEditScreen(
     onSave: (Song) -> Unit,
     onBack: () -> Unit
 ) {
-    var name by remember { mutableStateOf(song?.name ?: "") }
-    var folder by remember { mutableStateOf(song?.folder ?: "") }
-    var content by remember { mutableStateOf(song?.content ?: "") }
-    var tone by remember { mutableStateOf(song?.tone ?: "") }
-    var rhythm by remember { mutableStateOf(song?.rhythm ?: "") }
-    var tempo by remember { mutableStateOf(song?.tempo ?: "") }
-    var harmony by remember { mutableStateOf(song?.harmony ?: "") }
-    var melody by remember { mutableStateOf(song?.melody ?: "") }
-    var chords by remember { mutableStateOf(song?.chords ?: "") }
-    var tab by remember { mutableStateOf(song?.tab ?: "") }
-    var structure by remember { mutableStateOf(song?.structure ?: "") }
-    var author by remember { mutableStateOf(song?.author ?: "") }
-    var urlsong by remember { mutableStateOf(song?.urlsong ?: "") }
-    var urltutorial by remember { mutableStateOf(song?.urltutorial ?: "") }
-    var urlmidi by remember { mutableStateOf(song?.urlmidi ?: "") }
-    var urlgpt by remember { mutableStateOf(song?.urlgpt ?: "") }
-    var urlpartiture by remember { mutableStateOf(song?.urlpartiture ?: "") }
+    var name by remember(song) { mutableStateOf(song?.name ?: "") }
+    var folder by remember(song) { mutableStateOf(song?.folder ?: "") }
+    var content by remember(song) { mutableStateOf(song?.content ?: "") }
+    var tone by remember(song) { mutableStateOf(song?.tone ?: "") }
+    var rhythm by remember(song) { mutableStateOf(song?.rhythm ?: "") }
+    var tempo by remember(song) { mutableStateOf(song?.tempo ?: "") }
+    var harmony by remember(song) { mutableStateOf(song?.harmony ?: "") }
+    var melody by remember(song) { mutableStateOf(song?.melody ?: "") }
+    var chords by remember(song) { mutableStateOf(song?.chords ?: "") }
+    var tab by remember(song) { mutableStateOf(song?.tab ?: "") }
+    var structure by remember(song) { mutableStateOf(song?.structure ?: "") }
+    var author by remember(song) { mutableStateOf(song?.author ?: "") }
+    var urlsong by remember(song) { mutableStateOf(song?.urlsong ?: "") }
+    var urltutorial by remember(song) { mutableStateOf(song?.urltutorial ?: "") }
+    var urlmidi by remember(song) { mutableStateOf(song?.urlmidi ?: "") }
+    var urlgpt by remember(song) { mutableStateOf(song?.urlgpt ?: "") }
+    var urlpartiture by remember(song) { mutableStateOf(song?.urlpartiture ?: "") }
 
     var expandedAdvanced by remember { mutableStateOf(false) }
 
@@ -65,8 +66,33 @@ fun SongEditScreen(
                 },
                 actions = {
                     Button(
+                        enabled = name.isNotBlank(),
                         onClick = {
-                            onSave(Song(name, tone, chords, rhythm, tempo, content, tab, structure, harmony, melody, author, folder, urlsong, urltutorial, urlmidi, urlgpt, urlpartiture))
+                            val uniqueChords = ChordTransposer.getUniqueChords(content)
+                            val finalChords = chords.ifBlank { uniqueChords.joinToString(" ") }
+                            val finalTone = tone.ifBlank { uniqueChords.firstOrNull() ?: "" }
+
+                            onSave(
+                                Song(
+                                    name = name.trim(),
+                                    tone = finalTone,
+                                    chords = finalChords,
+                                    rhythm = rhythm,
+                                    tempo = tempo,
+                                    content = content,
+                                    tab = tab,
+                                    structure = structure,
+                                    harmony = harmony,
+                                    melody = melody,
+                                    author = author,
+                                    folder = folder,
+                                    urlsong = urlsong,
+                                    urltutorial = urltutorial,
+                                    urlmidi = urlmidi,
+                                    urlgpt = urlgpt,
+                                    urlpartiture = urlpartiture
+                                )
+                            )
                         },
                         modifier = Modifier.padding(end = 8.dp)
                     ) {
@@ -145,7 +171,21 @@ fun SongEditScreen(
 
             // Section 4: Tablature
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(stringResource(R.string.tablature), style = MaterialTheme.typography.titleMedium)
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.tablature), style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+                    TextButton(onClick = {
+                        val (extractedTabs, updatedContent) = processAndExtractTabs(content)
+                        if (extractedTabs.isNotEmpty()) {
+                            tab = if (tab.isBlank()) extractedTabs else "$tab\n\n$extractedTabs"
+                            content = updatedContent
+                        }
+                    }) {
+                        Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(16.dp))
+                        Spacer(Modifier.width(4.dp))
+                        Text(stringResource(R.string.extract_tabs))
+                    }
+                }
+
                 OutlinedTextField(
                     value = tab,
                     onValueChange = { tab = it },

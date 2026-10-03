@@ -146,6 +146,7 @@
     <string name="chord_progression_placeholder">G D Em C...</string>
     <string name="lyrics_with_chords">Letra con [Acordes]</string>
     <string name="tablature">Tablatura</string>
+    <string name="extract_tabs">Extraer Tablatura</string>
     <string name="tab_placeholder">e|---...\nB|---...</string>
     <string name="advanced_details_links">Detalles Avanzados y Enlaces</string>
     <string name="advanced_details_summary">URLs, Estructura, Armonía...</string>

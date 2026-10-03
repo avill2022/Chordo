@@ -177,6 +177,7 @@
     <string name="chord_progression_placeholder">G D Em C...</string>
     <string name="lyrics_with_chords">Lyrics with [Chords]</string>
     <string name="tablature">Tablature</string>
+    <string name="extract_tabs">Extract Tabs</string>
     <string name="tab_placeholder">e|---...\nB|---...</string>
     <string name="advanced_details_links">Advanced Details &amp; Links</string>
     <string name="advanced_details_summary">URLs, Structure, Harmony...</string>

@@ -167,10 +167,19 @@ class ChordoViewModel
         return _chords.value.songs[id]
     }
 
-    fun saveSong(song: Song) {
+    fun saveSong(song: Song, originalSong: Song? = null, songIndex: Int? = null) {
         val currentSongs = _chords.value.songs.toMutableList()
-        val index = currentSongs.indexOfFirst { it.name == song.name && it.folder == song.folder }
-        if (index != -1) {
+        val index = when {
+            songIndex != null && songIndex in currentSongs.indices -> songIndex
+            originalSong != null -> currentSongs.indexOfFirst {
+                it.name == originalSong.name && it.folder == originalSong.folder
+            }
+            else -> currentSongs.indexOfFirst {
+                it.name == song.name && it.folder == song.folder
+            }
+        }
+
+        if (index != -1 && index in currentSongs.indices) {
             currentSongs[index] = song
         } else {
             currentSongs.add(song)
@@ -178,8 +187,18 @@ class ChordoViewModel
         _chords.value = _chords.value.copy(songs = currentSongs)
         val json = Gson().toJson(_chords.value)
         repository.getMyFilesManager().save("chords_cache.json", json)
+
+        if (originalSong != null) {
+            viewModelScope.launch(Dispatchers.IO) {
+                if (repository.isFavorite(originalSong.name, originalSong.folder)) {
+                    repository.removeFavorite(originalSong.name, originalSong.folder)
+                    repository.addFavorite(song.toFavoriteSong())
+                }
+            }
+        }
+
         updateFilteredSongs()
-        
+
         // Also save individual song to server
         saveChordToServer(song)
     }
